@@ -9,7 +9,7 @@ use, a license must be purchased from
 
 It prints a little message to stderr about the non-commercial license.
 
-The directory `LosslessPDFCompressor' contains another useful program which
+The directory `LosslessPDFCompressor` contains another useful program which
 compresses PDF files. See the README.md file in that directory for details.
 
 Functionality
