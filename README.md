@@ -7,7 +7,7 @@ For non-commercial use only. See the file LICENSE for details. For commercial
 use, a license must be purchased from
 [http://www.coherentpdf.com](http://www.coherentpdf.com).
 
-It prints a little message to stderr about the non-commercial license.
+It prints a little message to stderr about the non-commercial license, and sets the Producer to cpdf.
 
 Functionality
 ---
