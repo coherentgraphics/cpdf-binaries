@@ -50,6 +50,8 @@ To Install
 The program cpdf (or cpdf.exe for Windows) is a single executable with no
 dependencies. Copy it to somewhere suitable on your platform.
 
+The last version of cpdf compatible with Windows XP is v2.2.1.
+
 Support
 ---
 
