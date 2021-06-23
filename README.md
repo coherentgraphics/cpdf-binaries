@@ -53,6 +53,10 @@ dependencies. Copy it to somewhere suitable on your platform.
 
 The last version of cpdf compatible with Windows XP is v2.2.1.
 
+MacOS: The executable is codesigned, but not notarized. If it refuses to run
+the first time, go to System Preferences --> Security & Privacy --> General and
+click "Allow anyway".
+
 Support
 ---
 
