@@ -57,6 +57,16 @@ MacOS: The executable is codesigned, but not notarized. If it refuses to run
 the first time, go to System Preferences --> Security & Privacy --> General and
 click "Allow anyway".
 
+C API
+-----
+
+A C interface to cpdf is available, in source and binary form:
+
+[https://github.com/johnwhitington/cpdflib-source](https://github.com/johnwhitington/cpdflib-source)
+
+[https://github.com/coherentgraphics/cpdflib-binary](https://github.com/coherentgraphics/cpdflib-binary)
+
+
 Support
 ---
 
