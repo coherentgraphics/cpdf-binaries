@@ -21,7 +21,7 @@ Functionality
 * Supports Unicode UTF8 text input and output
 * Make PDF-based presentations
 * Put multiple pages on a single page
-* Add, remove and manipulate annotations
+* List, copy, or remove annotations
 * Read and set document information and metadata
 * Add and remove file attachments to document or page.
 * Thicken hairlines, blacken text, make draft documents
