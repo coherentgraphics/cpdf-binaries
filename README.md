@@ -3,6 +3,9 @@ cpdf-binaries
 
 PDF Command Line Tools binaries for Linux, Mac, Windows.
 
+**Version 2.5 for MacOS ARM coming in February 2022. Use Mac Intel or v2.4 ARM
+until then.**
+
 For non-commercial use only. See the file LICENSE for details. For commercial
 use, a license must be purchased from
 [http://www.coherentpdf.com](http://www.coherentpdf.com).
@@ -16,7 +19,7 @@ Functionality
 
 * Quality Split and Merge, keeping bookmarks. Extract pages. Split on Bookmarks.
 * Encrypt and Decrypt (including AES 128 and AES 256 encryption)
-* Scale, rotate, crop and flip pages. Scale pages to fit
+* Scale, rotate, crop and flip pages. Scale pages to fit.
 * Copy, Remove and Add bookmarks
 * Stamp logos, watermarks, page numbers and multiline text. Transparency.
 * Supports Unicode UTF8 text input and output
@@ -28,7 +31,9 @@ Functionality
 * Thicken hairlines, blacken text, make draft documents
 * Reconstruct malformed files
 * Detect missing fonts, low resolution images
-* Combine multiple operations in a single command
+* Export and import PDF files in JSON format
+* Build table of contents
+* Convert text to PDF
 
 
 Documentation
