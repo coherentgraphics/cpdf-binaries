@@ -3,9 +3,6 @@ cpdf-binaries
 
 PDF Command Line Tools binaries for Linux, Mac, Windows.
 
-**Version 2.5 for MacOS ARM coming in February 2022. Use Mac Intel or v2.4 ARM
-until then.**
-
 For non-commercial use only. See the file LICENSE for details. For commercial
 use, a license must be purchased from
 [http://www.coherentpdf.com](http://www.coherentpdf.com).
