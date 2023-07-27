@@ -71,7 +71,7 @@ click "Allow anyway". Instructions:
 C/C++/Python/.NET/Java API
 ---
 
-And API version of these tools is available:
+An API version of these tools is available:
 
 C/C++ source: [https://github.com/johnwhitington/cpdflib-source](https://github.com/johnwhitington/cpdflib-source)
 
