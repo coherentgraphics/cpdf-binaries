@@ -1,17 +1,17 @@
 cpdf-binaries
 =============
 
-**Download the "master" zip by clicking Code --> Download Zip. Do not download a versioned tag.**
+**Download the "master" zip by clicking Code --> Download Zip. Do not download
+a versioned tag.**
 
 PDF Command Line Tools binaries for Linux, Mac, Windows.
 
-For non-commercial use only. See the file LICENSE for details. For commercial
-use, a license must be purchased from
-[http://www.coherentpdf.com](http://www.coherentpdf.com).
+Cpdf is distributed under the AGPL - see LICENSE.md. If you are unable to abide
+by the terms of the AGPL, you will need a commercial license.
 
-It prints a little message to stderr about the non-commercial license, and sets
-the Producer to cpdf.
-
+For commercial licenses, email
+[contact@coherentgraphics.co.uk](mailto:contact@coherentgraphics.co.uk) or
+visit [https://www.coherentpdf.com/](https://www.coherentpdf.com/)
 
 Functionality
 ---
@@ -97,3 +97,7 @@ Support
 
 Raise an issue in this github repository, or email
 contact@coherentgraphics.co.uk
+
+For commercial licenses, email
+[contact@coherentgraphics.co.uk](mailto:contact@coherentgraphics.co.uk) or
+visit [https://www.coherentpdf.com/](https://www.coherentpdf.com/)
