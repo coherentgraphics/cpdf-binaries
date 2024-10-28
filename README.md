@@ -42,7 +42,7 @@ Documentation
 
 PDF Manual:
 
-[http://www.coherentpdf.com/cpdfmanual.pdf](http://www.coherentpdf.com/cpdfmanual.pdf)
+[http://www.coherentpdf.com/cpdfmanual272.pdf](http://www.coherentpdf.com/cpdfmanual272.pdf)
 
 Examples:
 
