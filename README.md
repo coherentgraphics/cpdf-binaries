@@ -35,7 +35,9 @@ Functionality
 * Build table of contents
 * Convert text to PDF
 * Draw on PDF files with graphics and text
-
+* Create and process PDF/UA-1 and PDF/UA-2 files
+* Process images to, for example, reduce resolution
+* Rasterize PDF files
 
 Documentation
 ---

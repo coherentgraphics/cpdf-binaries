@@ -1,0 +1,336 @@
+2.8.1 (April 2025)
+
+New features:
+
+* -remove-struct-tree removes whole structure tree
+* -mark-as-artifact marks a whole file as an artifact
+
+Extended features:
+
+o -obj JSON output
+* -obj/-obj-json can follow a chain from an object number
+* -obj/-obj-json can explore through arrays and name/number trees
+* -print-dict-entry, -remove-dict-entry and -replace-dict-entry
+  can follow a chain from each found dictionary entry
+* Much more of the PDF/UA Matterhorn verification suite implemented
+* PDF/UA verifier now returns extra information with most failures
+* Font lister now returns the font itself
+o Allow %objnum in output name for -extract-images
+* -show-boxes, -trim-marks, -table-of-contents, -add-text
+  -add-rectangle, -impose, -twoup, -twoup-stack now preserve
+  PDF/UA and PDF/UA-2 compatibility
+* Preserve PDF/UA and PDF/UA-2 when drawing on existing PDF
+* Preserve PDF/UA and PDF/UA-2 with -stamp-on and -combine-pages
+o Allow -scale-stamp-to-fit for -combine-pages
+* Allow -underneath for -combine-pages
+* Preserve roundtripping of names destinations / actions
+* -preserve-actions allows PDF/UA-2 style roundtripping of
+  outlines
+
+Fixes:
+
+o Harden auto-compression against malformed streams
+o Add backup JPEG dimensions method in Cpdfimage
+o Correct object stream behaviour when splitting
+o Fix margin calculation for -table-of-contents
+
+* = Supported by a grant from NLnet
+
+2.8 (December 2024)
+
+New features:
+
+o New -center-to-fit centres pages on a given paper size
+o New -jpeg-to-jpeg-scale and -jpeg-to-jpeg-dpi
+o Rasterize PDFs by calling out to GhostScript
+o Extract pages as PNG/JPEG by calling out to GhostScript
+o Replace stream content with -replace-stream
+
+Extended features:
+
+o Expand page characteristics to cover Art, Trim, Bleed
+o Add Piece Info to -composition[-json]
+o Add @b<n>@ for trimming bookmark text to given length
+o Allow bold, italic, colours for JSON bookmarks
+o Show OpenAction in -info
+o Show more form information in -info
+o Allow JSON / PDF syntax in dict processing and object exploration
+o Show %Bookmark text when stamping text
+o Change units for -info[-json] and -page-info[-json]
+o Optionally add dot leaders to tables of content
+o Add -collate-n to extend -collate to multiple pages at once
+
+Fixes:
+
+o Clean up @B implementation for -split-on-bookmarks
+o -merge-add-bookmarks now has proper titles for images
+o Font operations now include fonts within xobjects
+o Image extraction now includes images within xobjects within xobjects
+* HTML manual now ranks equally with PDF manual
+
+* = Supported by a grant from NLnet
+
+2.7.2 (October 2024)
+
+New features:
+
+* New -args-json for better control files
+* New -replace-obj to edit dictionary entries via chain
+* Create PDF/UA files from scratch with -create-pdf-ua-[1|2]
+* Create structure information for files with -draw
+* Draw can now make paragraphs with -para, -paras
+* Add structure information to -typeset
+* -typeset can make PDF/UA documents
+* -jpeg, -png and friends can make PDF/UA documents
+* Merge PDF/UA-1 and PDF/UA-2 files, preserving standards compliance
+o -stretch scales without preserving aspect ratio
+o -redact removes whole pages
+
+Extended features:
+
+o Rectangles may be specified as x y x' y' rather than x y w h
+
+Fixes:
+
+o Removed setting of Producer field in AGPL version
+* Removed long-deprecated -control
+* More compact -print-struct-tree
+o -image-resolution-json was listing all images
+
+* = Supported by a grant from NLnet
+
+
+2.7.1 (July 2024)
+
+New features:
+
+o Build PDF files from JPEG2000 (.jp2, .jpf/.jpx) files
+* Mark a file as PDF/UA compliant, or remove such marking
+* Partial verification to PDF/UA via the Matterhorn protocol
+* Extract, edit and reapply document structure tree
+* Print structure tree summary
+* Split structure tree when splitting PDF to save size
+* Combine structure trees when merging or stamping PDFs
+* Set the natural language of a file
+
+Extended features:
+
+o Allow -obj to look up nested PDF information
+* Merge structure trees better when merging files
+* Report top-level natural language on -info
+* Report mark information dictionary contents on -info
+
+Backward-incompatible change:
+
+* -process-struct-tree replaces -no-process-struct-tree
+newly introduced in previous version
+
+* = Supported by a grant from NLnet
+
+
+2.7 (February 2024)
+
+New features:
+
+o Split files to max size with -split-max
+o Spray splits a file to multiple outputs by alternating pages
+o List document and page info in JSON format
+o List page labels in JSON format
+o List fonts in JSON format
+o Identify PDF/A, PDF/X, PDF/E, PDF/VT, PDF/UA in -info
+o Identify AcroForm in -info
+o Extract font files from a document
+o List images on a page with -list-images[-json]
+o Chop pages up into sections with -chop
+o Build PDF files from JBIG2 streams, including globals
+o Reprocess images within PDFs to further compress them
+o Extract streams to disk
+o Explore PDFs by printing objects
+o Shift page boxes with -shift-boxes
+
+Extended features:
+
+o -list-images-used[-json] extends -image-resolution
+o Use -raw with -extract-images to get PNMs
+o -extract-images can extract JBIG2 images and their globals
+o More PNGs - greyscale 1, 2, 4, 8, 16bpp and RGB 16bpp
+o Report number of annotations in -page-info
+o Specify image based only on file extension
+o -squeeze updates old compression methods
+o Show page size summary in -info
+o Add -no-process-struct-trees to prevent merging of structure trees
+
+Fixes:
+
+o Added opam file in-source
+o Fixed -set-annotations with page links
+o Allow Exif JPEGs as well as JFIF ones in -jpeg and -draw-jpeg
+o Only compress a stream if it actually makes it smaller
+
+
+2.6.1 (September 2023)
+
+o Fixed regression in UTF8 text with -add-text
+
+
+2.6 (July 2023)
+
+New features:
+
+o Create new PDF documents or draw on existing ones with -draw
+o Embed TrueType fonts with -load-ttf
+o Embed the 14 standard fonts if requested
+o Add links to parts of text with -add-text as %URL[|]
+o Convert JPEGs and PNGs to PDFs with -jpeg and -png
+o Export, import, and thereby round-trip annotations via JSON
+o Show composition of PDF with -composition[-json]
+o Use page labels like <iii> and <A-2> in page specifications
+
+Extended features:
+
+o Allow -utf8 with -split-bookmarks -o @B.pdf to produce UTF8 filenames
+o -merge-add-bookmarks now works with unicode filenames
+o Better transformation of some annotation types
+o -list-annotations[-json] now respects page range
+o Merge now merges structure trees (tagged PDF)
+o Merge now rewrites clashing name tree entries
+o Preserve /GoTo actions in bookmarks when merging
+o UTF8 option for JSON output
+o -info now shows object stream, /ID data, page mode and layout
+o More options for viewer preference control
+o More default colours, by using the CSS colour list
+
+Fixes:
+
+o Updated Yojson to remove dependency on Stream, ready for OCaml 5
+o -typeset was opening files in text mode, instead of binary
+o Fixed behaviour of -squeeze-no-pagedata / -squeeze-no-recompress 
+o Significant improvements to malformed file reading
+o Allow DUP page specifications to use larger numbers
+o Reworked functions transforming pages to better preserve patterns
+
+
+2.5.1 (January 2022)
+
+o Fix a regression where standard fonts could not be chosen
+
+
+2.5 (January 2022)
+
+New features:
+
+o Can read as well as write PDFs in JSON format with -j
+o New operation -typeset typesets a text file as a PDF
+o New operation -table-of-contents makes table of contents from bookmarks
+o New operations -impose and -impose-xy for document imposition
+o New operation -print-font-table gives (charcode, unicode, glyph name) triples
+o New -print-dict-entry operation prints values for a given key
+o New -replace-dict-entry function to search & replace e.g URLs
+o Prepend e.g 2DUP to a page range to make 1,2,3 --> 1,1,2,2,3,3 etc.
+o Prepend NOT to a page range to invert it
+o Output annotations in JSON form with -list-annotations-json
+o Output bookmarks in JSON format with -list-bookmarks-json
+o Load bookmarks in JSON format with -add-bookmarks-json
+o New option -collate to collate pages when merging
+o Text added in existing fonts is now encoding-aware (plus new raw mode)
+
+Extended features:
+
+o Extend -remove-dict-entry to allow search
+o Annotation /QuadPoints processed in addition to /Rect when transforming pages
+o When adding text or graphics, may choose CYMK or Grey instead of RGB
+o The -list-fonts operation now obeys the range
+o Can now search for a font by real name with -font
+o Basic merging of AcroForms when merging documents
+o Add -idir-only-pdfs to restrict -idir to just files ending in .pdf
+o Option -debug-force now properly documented as -decrypt-force
+
+Internal changes:
+
+o Switch to Yojson for faster/better JSON input/output
+o Environment variable CPDF_REPRODUCIBLE_DATES for testing
+o Environment variable CPDF_DEBUG for -debug
+o Effectively make stderr unbuffered
+o Split cpdf.ml into separate modules
+
+
+2.4 (June 2021)
+
+o New operation -extract-images
+o New operation -output-json et al. to export PDF files in JSON format
+o New operations to manipulate Optional Content Groups
+o New operation -stamp-as-xobject to add one PDF as an xobject in another
+o Optional Content Groups now preserved when merging / stamping pages
+o Listing, coalescing and modfiying Optional Content Groups.
+o New -labels-progress option to improve page labels interface
+o Appearance streams transformed when transforming annotations
+o Bookmark destination positions transformed when transforming pages
+o No longer depends on Bigarray or Unix modules
+
+
+2.3 (patchlevel 1, December 2019)
+
+o Fixed bug which prevented -info working on encrypted files
+o Allow -shift with -add-text for additional adjustment
+o Prepend and postpend directly to page content streams
+
+
+2.3 (October 2019)
+
+o Directly set and remove Trim, Art, and Bleed boxes
+o Dump attachments to file
+o Extended bookmark format, preserving all bookmark information
+o New -pad-with, -pad-mutiple-before options
+o Set or create XMP metadata
+o Remove graphics clipping
+o Extended support for reading malformed files
+o Embed missing fonts by calling out to gs
+o Set bookmarks open to a given level
+o Create PDF files from scatch
+o Remove single images by name
+o Add trim marks
+
+
+2.2 (patchlevel 1)
+
+o Fix for inability to read null objects in streams
+o Workaround for Adobe "Error 21" on re-saving encrypted files
+o More efficient bookmark operations on files with many pages
+o New operation -hard-box to clip contents to a given box
+
+
+2.2 (March 2017)
+
+o Perform arithmetic on dimensions when specifying size or position
+o Add simple rectangles to PDF to blank things out
+o Stamping operations now preserve annotations
+o Decryption fully on-demand for speed.
+o -keep-l keeps existing linearization status
+o -remove-dict-entry to remove the contents of a dictionary entry
+o -topline in addition to -midline
+o -producer and -creator may be used to alter producer and creator
+in conjunction with any other operation
+o -topline and -midline now apply to stamps
+o -list-spot-colours
+o -bates-at-range and -bates-pad-to
+o -print-page-labels
+o -squeeze replaces smpdf
+o Preserve more sharing of data when doing merges and page alterations
+
+
+2.1 (December 2014)
+
+o Encryption now much, much faster
+o Faster parsing of delayed object streams on large files
+o -decompress now leaves object streams decompressed
+o Select pages by landscape-ness or portrait-ness in a page range
+o New -open-at-page and -open-at-page-fit option to set the open action
+o New -recrypt option to re-encrypt output
+o Reads XMP metadata and outputs it on -info
+o New -center position for text
+o -stamp can now use positions, just like stamping text
+o Better handling of permissions for files with user passwords
+o Linearization excised
+o Can encrypt or recrypt output of -split and -split-bookmarks now
+o -args replaces -control with better behaviour
+o Can scale a stamp to fit before stamping with -scale-stamp-to-fit
