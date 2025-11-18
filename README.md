@@ -13,6 +13,18 @@ For commercial licenses, email
 [contact@coherentgraphics.co.uk](mailto:contact@coherentgraphics.co.uk) or
 visit [https://www.coherentpdf.com/](https://www.coherentpdf.com/)
 
+Cpdf may be available in your package manager:
+
+| Operating system | Command
+| ---------------- | -------
+| Windows          | `winget install cpdf`
+| MacOS            | `brew install cpdf`
+| Linux Fedora     | `dnf install cpdf`
+| Linux Debian     | `apt-get install cpdf`
+| Linux Arch       | AUR package `cpdf`
+| Linux Gentoo     | `emerge app-text/cpdf`
+| Linux NixOS      | `nixshell -p OCamlPackages.cpdf`
+
 Functionality
 ---
 
