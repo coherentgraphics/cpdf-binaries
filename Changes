@@ -1,3 +1,8 @@
+2.8.2 (November 2025)
+
+o This release, Windows 64 bit only, removes the dependency on wmic for reading
+the date. Wmic was removed from Windows 11 in 2H25 by Microsoft.
+
 2.8.1 (April 2025)
 
 New features:
