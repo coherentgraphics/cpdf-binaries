@@ -21,7 +21,7 @@ Cpdf may be available in your package manager:
 | Windows Chocolatey | `choco install cpdf`
 | MacOS              | `brew install cpdf`
 | Linux Fedora       | `dnf install cpdf`
-| Linux Ubuntu       | `apt-get install cpdf (must have 'universe' repository configured)`
+| Linux Ubuntu       | `apt-get install cpdf` (must have 'universe' repository configured)
 | Linux Debian       | `apt-get install cpdf`
 | Linux Arch         | AUR package `cpdf`
 | Linux Gentoo       | `emerge app-text/cpdf`
