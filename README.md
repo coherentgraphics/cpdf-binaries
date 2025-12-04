@@ -1,7 +1,7 @@
 cpdf-binaries
 =============
 
-**Download the "master" zip by clicking Code --> Download Zip. Do not download
+**Download the "master" zip from https://github.com/coherentgraphics/cpdf-binaries/archive/master.zip. Do not download
 a versioned tag.**
 
 PDF Command Line Tools binaries for Linux, Mac, Windows.
