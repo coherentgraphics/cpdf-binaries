@@ -1,3 +1,10 @@
+(CPDF 2.9 BETA)
+===============
+
+CPDF 2.9 Beta binaries can be downloaded here: https://coherentpdf.com/beta/Cpdf-2.9-beta-binaries.zip
+
+Not a substitute for stable v2.8.1/v2.8.2, for which see the following instructions:
+
 cpdf-binaries
 =============
 
