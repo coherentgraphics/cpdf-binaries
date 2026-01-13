@@ -35,6 +35,10 @@ Cpdf may be available in your package manager:
 | Linux NixOS        | `nixshell -p OCamlPackages.cpdf`
 | Linux Alpine       | apk add cpdf
 
+Keep up to date by joining the very low volume cpdf-announce mailing list:
+
+https://groups.google.com/g/cpdf-announce/
+
 Functionality
 ---
 
