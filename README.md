@@ -22,18 +22,20 @@ visit [https://www.coherentpdf.com/](https://www.coherentpdf.com/)
 
 Cpdf may be available in your package manager:
 
-| Operating system   | Command
-| ------------------ | -------
-| Windows Winget     | `winget install cpdf`
-| Windows Chocolatey | `choco install cpdf`
-| MacOS              | `brew install cpdf`
-| Linux Fedora       | `dnf install cpdf`
-| Linux Ubuntu       | `apt-get install cpdf` (must have 'universe' repository configured)
-| Linux Debian       | `apt-get install cpdf`
-| Linux Arch         | AUR package `cpdf`
-| Linux Gentoo       | `emerge app-text/cpdf`
-| Linux NixOS        | `nixshell -p OCamlPackages.cpdf`
-| Linux Alpine       | apk add cpdf
+| Operating system    | Command
+| ------------------- | -------
+| Windows Winget      | `winget install cpdf`
+| Windows Chocolatey  | `choco install cpdf`
+| MacOS               | `brew install cpdf`
+| Linux Fedora        | `dnf install cpdf`
+| Linux RHEL          | `dnf install cpdf` (must have 'EPEL' repository configured)
+| Linux Centos Stream | `dnf install cpdf` (must have 'EPEL' repository configured)
+| Linux Ubuntu        | `apt-get install cpdf` (must have 'universe' repository configured)
+| Linux Debian        | `apt-get install cpdf`
+| Linux Arch          | AUR package `cpdf`
+| Linux Gentoo        | `emerge app-text/cpdf`
+| Linux NixOS         | `nixshell -p OCamlPackages.cpdf`
+| Linux Alpine        | apk add cpdf
 
 Keep up to date by joining the very low volume cpdf-announce mailing list:
 
