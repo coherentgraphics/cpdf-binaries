@@ -5,6 +5,8 @@ CPDF 2.9 Beta binaries can be downloaded here: https://coherentpdf.com/beta/Cpdf
 
 Not a substitute for stable v2.8.1/v2.8.2, for which see the following instructions:
 
+<img width="400" height="163" alt="cpdf logo" src="https://github.com/user-attachments/assets/afc5a599-d342-4088-bd0f-d11b8ec74bf3" />
+
 cpdf-binaries
 =============
 
