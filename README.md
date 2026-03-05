@@ -37,7 +37,7 @@ Cpdf may be available in your package manager:
 | Linux Arch          | AUR package `cpdf`
 | Linux Gentoo        | `emerge app-text/cpdf`
 | Linux NixOS         | `nixshell -p OCamlPackages.cpdf`
-| Linux Alpine        | apk add cpdf
+| Linux Alpine        | `apk add cpdf`
 
 Keep up to date by joining the very low volume cpdf-announce mailing list:
 
