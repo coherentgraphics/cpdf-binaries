@@ -1,7 +1,60 @@
-2.8.2 (November 2025)
+2.9 (March 2026)
 
-o This release, Windows 64 bit only, removes the dependency on wmic for reading
-the date. Wmic was removed from Windows 11 in 25H2 by Microsoft.
+New features:
+
+o Cpdf now has a man page, which abbreviates cpdfmanual.pdf
+o More sensible -help (current -help moved to -summary)
+o Detect and remove JavaScript
+o Show progress on long files
+o Create PDF portfolios
+o Remove procsets, article threads, page pieces
+o Remove web capture, output intents, alternate images
+o Reprocess JPEG2000s within files
+o Convert lossless images to JPEG2000
+o Remove all metadata streams
+o Extract all metadata streams to file
+o Allow the empty range
+o Allow a range specifying some pages which do not exist
+o Extract a single image with -extract-single-image
+
+Extended features:
+
+o CCITT and CCITTG4 encoders in -process-images
+o Force image processing even when image larger
+o -thinlines can ensure maximum as well as minimum thickness
+o New -just-content for easier content stream debugging
+o -squeeze processes xobjects inside xobjects
+o Speed increases for -squeeze on huge files
+o Select only such pages as are annotated
+o Allow -create-pdf and friends to appear in middle of AND
+o -draw can use JPEG2000s
+o New -list-attached-files -json optionally including file data
+o List and add descriptions and relationships for attachments
+o Process lossless CMYK images
+o Use 8bpp Alpha PNGs with -rasterize, -output-image, -png and when drawing
+o -list-images and friends show mask status, and list masks
+o -list-images and friends now list inline images
+o -list-images now distinguishes types of CCITT encoding
+o -list-images now distinguishes lossy and lossless JBIG2
+o Extract inline images
+o Extract soft masks
+o Optionally combine soft marks with image when extracting images
+o Decompress can decompress JBIG2 encoded streams with jbig2dec
+
+Fixes:
+
+* Sanitizes inputs to prevent command injection attacks
+o Fix PMAXX et al. w.r.t -add-rectangle
+o Allow Float/Int to appear anywhere in CPDFJSON / bookmark JSON
+o Allow -info in the case where objstm reading requires password
+o Allow -stdin in -info and in -merge (once)
+o Cpdfimages was accidentally creating palettised PNGs
+o Page label prefixes now in UTF8 
+o Regression where bookmarks were being corrupted
+o Removes the dependency on wmic for reading the date.
+o -pad-after, -pad-before were failing if range not sorted
+
+* = Supported by a grant from NLnet
 
 2.8.1 (April 2025)
 

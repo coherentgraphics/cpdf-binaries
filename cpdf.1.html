@@ -1,0 +1,2556 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<head>
+  <meta charset="utf-8" />
+  <meta name="generator" content="pandoc" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
+  <meta name="author" content="Coherent Graphics Ltd" />
+  <title>CPDF(1)</title>
+  <style>
+    /* Default styles provided by pandoc.
+    ** See https://pandoc.org/MANUAL.html#variables-for-html for config info.
+    */
+    html {
+      color: #1a1a1a;
+      background-color: #fdfdfd;
+    }
+    body {
+      margin: 0 auto;
+      max-width: 36em;
+      padding-left: 50px;
+      padding-right: 50px;
+      padding-top: 50px;
+      padding-bottom: 50px;
+      hyphens: auto;
+      overflow-wrap: break-word;
+      text-rendering: optimizeLegibility;
+      font-kerning: normal;
+    }
+    @media (max-width: 600px) {
+      body {
+        font-size: 0.9em;
+        padding: 12px;
+      }
+      h1 {
+        font-size: 1.8em;
+      }
+    }
+    @media print {
+      html {
+        background-color: white;
+      }
+      body {
+        background-color: transparent;
+        color: black;
+        font-size: 12pt;
+      }
+      p, h2, h3 {
+        orphans: 3;
+        widows: 3;
+      }
+      h2, h3, h4 {
+        page-break-after: avoid;
+      }
+    }
+    p {
+      margin: 1em 0;
+    }
+    a {
+      color: #1a1a1a;
+    }
+    a:visited {
+      color: #1a1a1a;
+    }
+    img {
+      max-width: 100%;
+    }
+    svg {
+      height: auto;
+      max-width: 100%;
+    }
+    h1, h2, h3, h4, h5, h6 {
+      margin-top: 1.4em;
+    }
+    h5, h6 {
+      font-size: 1em;
+      font-style: italic;
+    }
+    h6 {
+      font-weight: normal;
+    }
+    ol, ul {
+      padding-left: 1.7em;
+      margin-top: 1em;
+    }
+    li > ol, li > ul {
+      margin-top: 0;
+    }
+    blockquote {
+      margin: 1em 0 1em 1.7em;
+      padding-left: 1em;
+      border-left: 2px solid #e6e6e6;
+      color: #606060;
+    }
+    code {
+      font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
+      font-size: 85%;
+      margin: 0;
+      hyphens: manual;
+    }
+    pre {
+      margin: 1em 0;
+      overflow: auto;
+    }
+    pre code {
+      padding: 0;
+      overflow: visible;
+      overflow-wrap: normal;
+    }
+    .sourceCode {
+     background-color: transparent;
+     overflow: visible;
+    }
+    hr {
+      border: none;
+      border-top: 1px solid #1a1a1a;
+      height: 1px;
+      margin: 1em 0;
+    }
+    table {
+      margin: 1em 0;
+      border-collapse: collapse;
+      width: 100%;
+      overflow-x: auto;
+      display: block;
+      font-variant-numeric: lining-nums tabular-nums;
+    }
+    table caption {
+      margin-bottom: 0.75em;
+    }
+    tbody {
+      margin-top: 0.5em;
+      border-top: 1px solid #1a1a1a;
+      border-bottom: 1px solid #1a1a1a;
+    }
+    th {
+      border-top: 1px solid #1a1a1a;
+      padding: 0.25em 0.5em 0.25em 0.5em;
+    }
+    td {
+      padding: 0.125em 0.5em 0.25em 0.5em;
+    }
+    header {
+      margin-bottom: 4em;
+      text-align: center;
+    }
+    #TOC li {
+      list-style: none;
+    }
+    #TOC ul {
+      padding-left: 1.3em;
+    }
+    #TOC > ul {
+      padding-left: 0;
+    }
+    #TOC a:not(:hover) {
+      text-decoration: none;
+    }
+    code{white-space: pre-wrap;}
+    span.smallcaps{font-variant: small-caps;}
+    div.columns{display: flex; gap: min(4vw, 1.5em);}
+    div.column{flex: auto; overflow-x: auto;}
+    div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+    /* The extra [class] is a hack that increases specificity enough to
+       override a similar rule in reveal.js */
+    ul.task-list[class]{list-style: none;}
+    ul.task-list li input[type="checkbox"] {
+      font-size: inherit;
+      width: 0.8em;
+      margin: 0 0.8em 0.2em -1.6em;
+      vertical-align: middle;
+    }
+    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
+  </style>
+</head>
+<body>
+<header id="title-block-header">
+<h1 class="title">CPDF(1)</h1>
+<p class="author">Coherent Graphics Ltd</p>
+<p class="date">February 2026</p>
+</header>
+<h1 id="name">NAME</h1>
+<p>cpdf - PDF command line tools.</p>
+<h1 id="synopsis">SYNOPSIS</h1>
+<p>Simple operation:</p>
+<p><strong>cpdf</strong> [in.pdf] [operation] [options] [-o out.pdf]</p>
+<p>Operation on password-protected file:</p>
+<p><strong>cpdf</strong> in.pdf [user=&lt;password&gt;]
+[owner=&lt;password&gt;] … [-o out.pdf]</p>
+<p>Multiple operations, one after another:</p>
+<p><strong>cpdf</strong> [in.pdf] [operation] [options]
+<strong>AND</strong> [operation] [options] <strong>AND</strong> … [-o
+out.pdf]</p>
+<h1 id="description">DESCRIPTION</h1>
+<p><strong>Cpdf</strong> is an AGPL-licensed command line tool for
+processing PDF files. The rest of this document gives a brief
+description of each command line operation and option. The file
+cpdfmanual.pdf which you should find installed on your system or
+otherwise at https://www.coherentpdf.com/cpdfmanual.pdf gives the full
+usage details.</p>
+<p>The sections in this document follow the chapters of cpdfmanual.pdf,
+for easy cross-referencing.</p>
+<h1 id="basic-usage">1. BASIC USAGE</h1>
+<dl>
+<dt><strong>-version</strong></dt>
+<dd>
+<p>Print the Cpdf version number.</p>
+</dd>
+<dt><strong>-help, –help</strong></dt>
+<dd>
+<p>Gives links to sources of help.</p>
+</dd>
+<dt><strong>-summary</strong></dt>
+<dd>
+<p>Lists and describes very briefly each command line option.</p>
+</dd>
+<dt><strong>-o</strong> &lt;filename&gt;</dt>
+<dd>
+<p>The output filename. Beware of writing back to the input file.</p>
+</dd>
+<dt><strong>-i</strong> &lt;filename&gt;</dt>
+<dd>
+<p>Cpdf automatically treats any filename ending with .pdf (any case) as
+an input PDF. If your file does not end with .pdf, you can supply the
+file with <strong>-i</strong> instead.</p>
+</dd>
+<dt><strong>-range</strong> &lt;range&gt;</dt>
+<dd>
+<p>Gives the range of pages to be affected by an operation. By default,
+all pages are affected. The range may be specified without
+<strong>-range</strong> simply by writing it directly after the filename
+it relates to. Example ranges: “2” “1-5” “1,2,3-end” “odd” “NOT1-5”. See
+cpdfmanual.pdf for a full description.</p>
+</dd>
+<dt><strong>-progress</strong></dt>
+<dd>
+<p>Show which operations and on which pages they are operating, as it
+happens, on standard error.</p>
+</dd>
+<dt><strong>-keep-version</strong></dt>
+<dd>
+<p>Keep the PDF version of the input document even if features are used
+which would otherwise make it increase.</p>
+</dd>
+<dt><strong>-fast</strong></dt>
+<dd>
+<p>Presume ISO-compliant content streams when processing page content.
+This is faster, because it does not involve re-parsing whole streams to
+add content.</p>
+</dd>
+<dt><strong>-idir</strong> &lt;path&gt;</dt>
+<dd>
+<p>Add a whole directory of PDFs as inputs.</p>
+</dd>
+<dt><strong>-idir-only-pdfs</strong></dt>
+<dd>
+<p>Restrict <strong>-idir</strong> to only files ending in .pdf (any
+case). Must appear before <strong>-idir</strong>.</p>
+</dd>
+<dt><strong>-recrypt</strong></dt>
+<dd>
+<p>Re-encrypt output files using the same encryption parameters (if any)
+as the input file.</p>
+</dd>
+<dt><strong>-decrypt-force</strong></dt>
+<dd>
+<p>Allow the output file to be written decrypted even if permissions
+would otherwise prevent it.</p>
+</dd>
+<dt><strong>-stdout</strong></dt>
+<dd>
+<p>Write the output file to standard output instead of to a file with
+<strong>-o</strong>.</p>
+</dd>
+<dt><strong>-stdin</strong></dt>
+<dd>
+<p>Read the input PDF from standard input instead of from a named
+file.</p>
+</dd>
+<dt><strong>-stdin-user</strong> &lt;password&gt;</dt>
+<dd>
+<p>Supply the user password for the PDF which is from standard
+input.</p>
+</dd>
+<dt><strong>-stdin-owner</strong> &lt;password&gt;</dt>
+<dd>
+<p>Supply the owner password the the PDF which is from standard
+input.</p>
+</dd>
+<dt><strong>-producer</strong> &lt;string&gt;</dt>
+<dd>
+<p>Set the producer of the output file.</p>
+</dd>
+<dt><strong>-creator</strong> &lt;string&gt;</dt>
+<dd>
+<p>Set the creator of the output file.</p>
+</dd>
+<dt><strong>-change-id</strong></dt>
+<dd>
+<p>Change the PDF’s ID field when writing the output file.</p>
+</dd>
+<dt><strong>-l</strong></dt>
+<dd>
+<p>Linearize the PDF when writing. Requires a linearizer to be supplied
+with <strong>-cpdflin</strong>.</p>
+</dd>
+<dt><strong>-cpdflin</strong> &lt;path&gt;</dt>
+<dd>
+<p>Give the path of an external linearizer. For example, Qpdf.</p>
+</dd>
+<dt><strong>-keep-l</strong></dt>
+<dd>
+<p>Keep the linearization status (either linearized or not) of the input
+file upon output. Requires a linearizer to be supplied with
+<strong>-cpdflin</strong>.</p>
+</dd>
+<dt><strong>-no-preserve-objstm</strong></dt>
+<dd>
+<p>Do not preserve existing object streams when writing the output file.
+Note that <strong>-create-objstm</strong> and
+<strong>-no-preserve-objstm</strong> may be used together - the effect
+is then to redo all object streams.</p>
+</dd>
+<dt><strong>-create-objstm</strong></dt>
+<dd>
+<p>Create new object streams when writing the output file. Note that
+<strong>-create-objstm</strong> and <strong>-no-preserve-objstm</strong>
+may be used together - the effect is then to redo all object
+streams.</p>
+</dd>
+<dt><strong>-args</strong> &lt;filename&gt;</dt>
+<dd>
+<p>Read command line arguments from the given file by direct textual
+substitution into the command line, prior to any other processing.</p>
+</dd>
+<dt><strong>-args-json</strong> &lt;filename&gt;</dt>
+<dd>
+<p>Read command line arguments from a JSON file consisting of a single
+array of strings.</p>
+</dd>
+<dt><strong>-utf8</strong></dt>
+<dd>
+<p>Read and write string data as UTF8. Almost always the sensible
+option, and will become the default in a future version.</p>
+</dd>
+<dt><strong>-stripped</strong></dt>
+<dd>
+<p>Convert string output to 7 bit ASCII by dropping any high characters.
+To be used with caution.</p>
+</dd>
+<dt><strong>-raw</strong></dt>
+<dd>
+<p>Perform no processing on string outputs.</p>
+</dd>
+<dt><strong>-gs</strong> &lt;path&gt;</dt>
+<dd>
+<p>A very few of Cpdf’s functions rely upon the <strong>gs</strong>
+command. Its path may be supplied with <strong>-gs</strong>.</p>
+</dd>
+<dt><strong>-gs-malformed</strong></dt>
+<dd>
+<p>This option is used to allow Cpdf to call out to the
+<strong>gs</strong> command to pre-process badly malformed files as a
+last resort.</p>
+</dd>
+<dt><strong>-gs-malformed-force</strong></dt>
+<dd>
+<p>See cpdfmanual.pdf for details of this fragile command.</p>
+</dd>
+<dt><strong>-gs-quiet</strong></dt>
+<dd>
+<p>Do not show the output of <strong>gs</strong> when used.</p>
+</dd>
+<dt><strong>-error-on-malformed</strong></dt>
+<dd>
+<p>Do not attempt to reconstruct malformed files by any method, but exit
+with an error.</p>
+</dd>
+</dl>
+<h1 id="merging-and-splitting">2. MERGING AND SPLITTING</h1>
+<h2 id="merging">Merging</h2>
+<p><strong>cpdf -merge in1.pdf</strong> [&lt;range&gt;]
+<strong>in2.pdf</strong> [&lt;range&gt;] [&lt;more names/ranges&gt;]
+[-collate] [-collate-n &lt;n&gt;] [-retain-numbering]
+[-merge-add-bookmarks [-merge-add-bookmarks-use-titles]]
+[-remove-duplicate-fonts] [-process-struct-trees] [-subformat
+&lt;subformat&gt;] <strong>-o out.pdf</strong></p>
+<p>The <strong>-merge</strong> operation allows the merging of several
+files into one. Ranges can be used to select only a subset of pages from
+each input file in the output. The output file consists of the
+concatenation of all the input pages in the order specified on the
+command line. Actually, the <strong>-merge</strong> can be omitted,
+since this is the default operation of Cpdf.</p>
+<dl>
+<dt><strong>-collate</strong></dt>
+<dd>
+<p>Instead of ordinary operation, take the first page from the first
+document, then the first from the second and so on. Then the second page
+from the first document and on until all pages are exhausted.</p>
+</dd>
+<dt><strong>-collate-n</strong> &lt;n&gt;</dt>
+<dd>
+<p>Like <strong>-collate</strong>, but in chunks of more than one
+page.</p>
+</dd>
+<dt><strong>-retain-numbering</strong></dt>
+<dd>
+<p>Keep the page numbering of each input file intact, rather than
+renumbering the pages in the output document beginning at 1.</p>
+</dd>
+<dt><strong>-merge-add-bookmarks
+[-merge-add-bookmarks-use-titles]</strong></dt>
+<dd>
+<p>Add a top-level bookmark for each file, using the filename. The
+option <strong>-merge-add-bookmarks-use-titles</strong>, when used in
+conjunction with <strong>-merge-add-bookmarks</strong>, uses the titles
+from document metadata instead.</p>
+</dd>
+<dt><strong>-remove-duplicate-fonts</strong></dt>
+<dd>
+<p>Ensures that fonts used in more than one input appear only once in
+the output.</p>
+</dd>
+<dt><strong>-process-struct-trees</strong></dt>
+<dd>
+<p>Merge input structure trees in the output.</p>
+</dd>
+<dt><strong>-subformat</strong> &lt;subformat&gt;</dt>
+<dd>
+<p>If <strong>-subformat</strong> “PDF/UA-2” is given, together with
+<strong>-process-struct-trees</strong>, Cpdf will add a top-level
+Document structure tree element.</p>
+</dd>
+</dl>
+<h2 id="portfolios">Portfolios</h2>
+<p>A PDF portfolio is a special kind of PDF which contains other
+documents (PDF and otherwise) within it. Support is mostly limited to
+Adobe products at time of writing.</p>
+<p><strong>cpdf</strong> <strong>-portfolio</strong>
+<strong>in.pdf</strong> -pf &lt;filename&gt; [-pfd &lt;string&gt;] [-pfr
+&lt;relationship&gt;] [-pf …] <strong>-o out.pdf</strong></p>
+<p>The input <strong>in.pdf</strong> here is the main file. You can
+build a blank one with <strong>-create-pdf</strong>.</p>
+<dl>
+<dt><strong>-pf</strong> &lt;filename&gt;</dt>
+<dd>
+<p>The filename for each file to include in the portfolio.</p>
+</dd>
+<dt><strong>-pfd</strong> &lt;description&gt;</dt>
+<dd>
+<p>The description for the file (must appear after
+<strong>-pf</strong>).</p>
+</dd>
+<dt><strong>-pfr</strong> &lt;relationship&gt;</dt>
+<dd>
+<p>The so-called relationship for the file (must appear after
+<strong>-pf</strong>).</p>
+</dd>
+</dl>
+<h2 id="splitting">Splitting</h2>
+<p>We can split an input PDF into its constituent pages, and output one
+PDF for each page or each chunk of pages.</p>
+<p><strong>cpdf -split in.pdf</strong> [-chunk &lt;n&gt;]
+[-process-struct-trees] [-utf8] <strong>-o &lt;format&gt;</strong></p>
+<p>The output format has many options (see cpdfmanual.pdf for details).
+But the simplest is just to number the outputs in sequence. For example
+<strong>cpdf in.pdf -o out%%%.pdf</strong> will produce out001.pdf,
+out002.pdf and so on.</p>
+<dl>
+<dt><strong>-chunk</strong> &lt;n&gt;</dt>
+<dd>
+<p>Choose a chunk size other than 1.</p>
+</dd>
+<dt><strong>-process-struct-trees</strong></dt>
+<dd>
+<p>Split the input document’s structure tree into the output
+documents.</p>
+</dd>
+<dt><strong>-utf8</strong></dt>
+<dd>
+<p>This option may be required in the case of some output formats. See
+cpdfmanual.pdf for details.</p>
+</dd>
+</dl>
+<h2 id="splitting-on-bookmarks">Splitting on bookmarks</h2>
+<p><strong>cpdf -split-bookmarks &lt;level&gt; in.pdf</strong>
+[-process-struct-trees] [-utf8] <strong>-o &lt;format&gt;</strong></p>
+<p>Split on bookmark boundaries at a given level, instead of splitting
+on each page. Level 0 is top level, level 1 next, and so on. See above
+for format details.</p>
+<dl>
+<dt><strong>-process-struct-trees</strong></dt>
+<dd>
+<p>Split the input document’s structure tree into the output
+documents.</p>
+</dd>
+<dt><strong>-utf8</strong></dt>
+<dd>
+<p>This option may be required in the case of some output formats. See
+cpdfmanual.pdf for details.</p>
+</dd>
+</dl>
+<h2 id="splitting-to-a-given-size">Splitting to a given size</h2>
+<p><strong>cpdf -split-max &lt;n&gt; in.pdf</strong>
+[-process-struct-trees] [-utf8] <strong>-o &lt;format&gt; </strong></p>
+<p>Split the file, if possible, to a maximum file size (in bytes) for
+each output PDF. See above for format details.</p>
+<dl>
+<dt><strong>-process-struct-trees</strong></dt>
+<dd>
+<p>Split the input document’s structure tree into the output
+documents.</p>
+</dd>
+<dt><strong>-utf8</strong></dt>
+<dd>
+<p>This option may be required in the case of some output formats. See
+cpdfmanual.pdf for details.</p>
+</dd>
+</dl>
+<h2 id="interleaved-splitting">Interleaved splitting</h2>
+<p>We can use <strong>-spray</strong> to write the split pages to more
+than one named output file. When Cpdf runs out of output files, it adds
+the next page to the first output file, and so on until all input pages
+are exhausted.</p>
+<p><strong>cpdf -spray in.pdf</strong> [-process-struct-trees] [-utf8]
+<strong>-o a.pdf</strong> [-o b.pdf [-o …]]</p>
+<dl>
+<dt><strong>-process-struct-trees</strong></dt>
+<dd>
+<p>Split the input document’s structure tree into the output
+documents.</p>
+</dd>
+<dt><strong>-utf8</strong></dt>
+<dd>
+<p>This option may be required in the case of some output formats. See
+cpdfmanual.pdf for details.</p>
+</dd>
+</dl>
+<h1 id="pages">3. PAGES</h1>
+<p><strong>cpdf -scale-page “&lt;x scale&gt; &lt;y scale&gt;”</strong>
+<strong>in.pdf</strong> [&lt;range&gt;] [-fast] [&lt;position&gt;]
+<strong>-o out.pdf</strong></p>
+<p>Scale pages in the given range by the given factor e.g “2 2”. See
+Chapter 8 for information on positions.</p>
+<p><strong>cpdf -scale-to-fit “&lt;x size&gt; &lt;y size&gt;”</strong>
+<strong>in.pdf</strong> [&lt;range&gt;] [-fast] [-prerotate]
+[&lt;position&gt;] [-scale-to-fit-scale &lt;scale&gt;]
+[-scale-to-fit-rotate-clockwise] [-scale-to-fit-rotate-anticlockwise]
+<strong>-o out.pdf</strong></p>
+<p>Scale pages in the given range to fit the given size e.g “a4paper” or
+“10in 7in”, without altering the aspect ratio. By default the content
+will be centered on the new page. See Chapter 8 for information on
+positions.</p>
+<dl>
+<dt><strong>-scale-to-fit-scale</strong> &lt;n&gt;</dt>
+<dd>
+<p>Scale to a proportion of the available area, instead of filling it.
+For example 0.9 for 90 percent.</p>
+</dd>
+<dt><strong>-scale-to-fit-rotate-clockwise
+-scale-to-fit-rotate-anticlockwise</strong></dt>
+<dd>
+<p>Automatically rotate page to maximise use of area.</p>
+</dd>
+<dt><strong>-prerotate</strong></dt>
+<dd>
+<p>Remove any viewing rotation before beginning.</p>
+</dd>
+</dl>
+<p><strong>cpdf -stretch “&lt;x size&gt; &lt;y size&gt;”</strong>
+<strong>in.pdf</strong> [&lt;range&gt;] [-fast] <strong>-o
+out.pdf</strong></p>
+<p>Scale pages without regard to aspect ratio.</p>
+<p><strong>cpdf -center-to-fit “&lt;x size&gt; &lt;y size&gt;”</strong>
+<strong>in.pdf</strong> [&lt;range&gt;] [-fast] <strong>-o
+out.pdf</strong></p>
+<p>Center each page on a new page size, without scaling it.</p>
+<p><strong>cpdf -scale-contents &lt;scale&gt;</strong>
+<strong>in.pdf</strong> [&lt;range&gt;] [&lt;position&gt;] [-fast]
+<strong>-o out.pdf</strong></p>
+<p>Scale the content of pages by a given factor, without changing the
+size of the page. See the end of this chapter for position.</p>
+<p><strong>cpdf -shift “&lt;shift x&gt; &lt;shift y&gt;”</strong>
+<strong>in.pdf</strong> [&lt;range&gt;] [-fast] <strong>-o
+out.pdf</strong></p>
+<p>Shift the content of pages by a given displacement.</p>
+<p><strong>cpdf -shift-boxes “&lt;shift x&gt; &lt;shift y&gt;”</strong>
+<strong>in.pdf</strong> [&lt;range&gt;] <strong>-o out.pdf</strong></p>
+<p>Shift the boxes of a page by a given displacement, without moving the
+content.</p>
+<p><strong>cpdf -rotate &lt;angle&gt; in.pdf</strong> [&lt;range&gt;]
+<strong>-o out.pdf</strong></p>
+<p>Change the PDF viewing rotation of pages to 0, 90, 180 or 270 degrees
+clockwise.</p>
+<p><strong>cpdf -rotateby &lt;angle&gt; in.pdf</strong> [&lt;range&gt;]
+<strong>-o out.pdf</strong></p>
+<p>Change the PDF viewing rotation of pages by 0, 90, 180 or 270 degrees
+clockwise.</p>
+<p><strong>cpdf -upright</strong> <strong>in.pdf</strong>
+[&lt;range&gt;] [-fast] <strong>-o out.pdf</strong></p>
+<p>The <strong>-upright</strong> operation does whatever combination of
+<strong>-rotate</strong> and <strong>-rotate-contents</strong> is
+required to change the rotation of the document to zero without altering
+its appearance. In addition, it makes sure the media box has its origin
+at (0,0), changing other boxes to compensate.</p>
+<p><strong>cpdf -rotate-contents &lt;angle&gt;</strong>
+<strong>in.pdf</strong> [&lt;range&gt;] [-fast] <strong>-o
+out.pdf</strong></p>
+<p>Rotates the content of the page around its center point by the given
+angle.</p>
+<p><strong>cpdf -hflip</strong> <strong>in.pdf</strong> [&lt;range&gt;]
+[-fast] <strong>-o out.pdf</strong></p>
+<p>Flip page content horizontally.</p>
+<p><strong>cpdf -vflip</strong> <strong>in.pdf</strong> [&lt;range&gt;]
+[-fast] <strong>-o out.pdf</strong></p>
+<p>Flip page content vertically.</p>
+<p><strong>cpdf -[media | crop | art | trim | bleed]box &lt;boxspec&gt;
+in.pdf</strong> [&lt;range&gt;] <strong>-o out.pdf</strong></p>
+<p>Set the media, crop, art, trim or bleed box. For example
+<strong>-cropbox “50 50 300 200”</strong> sets minx 50, miny 50, width
+300, height 200. To use absolute numbers instead of width and height,
+prefix with a question mark, writing <strong>“?50 50 350 250”</strong>
+instead.</p>
+<p><strong>cpdf -remove-[crop | art | trim | bleed]box in.pdf</strong>
+[&lt;range&gt;] <strong>-o out.pdf</strong></p>
+<p>Remove a crop, art, trim or bleed box from pages.</p>
+<p><strong>cpdf -frombox &lt;boxname&gt; -tobox &lt;boxname&gt;</strong>
+<strong>in.pdf</strong> [&lt;range&gt;] [-mediabox-if-missing]
+<strong>-o out.pdf</strong></p>
+<p>Copy a box to another. For example from <strong>/TrimBox</strong> to
+<strong>/CropBox</strong>.</p>
+<dl>
+<dt><strong>-mediabox-if-missing</strong></dt>
+<dd>
+<p>Use media box, rather than failing, if the <strong>-frombox</strong>
+is missing.</p>
+</dd>
+</dl>
+<p><strong>cpdf -hard-box &lt;boxname&gt;</strong>
+<strong>in.pdf</strong> [&lt;range&gt;] [-fast] [-mediabox-if-missing]
+<strong>-o out.pdf</strong></p>
+<p>Create a hard box for a given box name - that is to say, one which
+clips its content.</p>
+<p><strong>cpdf -show-boxes</strong> <strong>in.pdf</strong>
+[&lt;range&gt;] [-fast] <strong>-o out.pdf</strong></p>
+<p>Show the media, crop, art, trim, and bleed boxes in Red, Green, Blue,
+Orange and Pink respectively.</p>
+<p><strong>cpdf -trim-marks</strong> <strong>in.pdf</strong>
+[&lt;range&gt;] [-fast] <strong>-o out.pdf</strong></p>
+<p>Add trim marks to a PDF. The trim box must be present.</p>
+<h1 id="encryption-and-decryption">4. ENCRYPTION AND DECRYPTION</h1>
+<p><strong>cpdf -encrypt &lt;method&gt; [-pw=]&lt;owner password&gt;
+[-pw=]&lt;user password&gt;</strong> <strong>in.pdf</strong>
+[-no-encrypt-metadata] &lt;permissions&gt; <strong>-o
+out.pdf</strong></p>
+<p>Encrypt a document given the method (e.g <strong>AES256ISO</strong>
+for modern usage), owner and user passwords, and optionally permissions.
+E.g <strong>cpdf -encrypt AES256ISO secret “” in.pdf -o
+out.pdf</strong>.</p>
+<dl>
+<dt><strong>-no-encrypt-metadata</strong></dt>
+<dd>
+<p>Do not encrypt metadata (AES encryption only).</p>
+</dd>
+<dt><strong>-pw=</strong>&lt;password&gt;</dt>
+<dd>
+<p>Useful if a password may begin with a dash.</p>
+</dd>
+</dl>
+<p>Permissions:</p>
+<dl>
+<dt><strong>-no-edit</strong></dt>
+<dd>
+<p>Cannot change the document.</p>
+</dd>
+<dt><strong>-no-print</strong></dt>
+<dd>
+<p>Cannot print the document.</p>
+</dd>
+<dt><strong>-no-copy</strong></dt>
+<dd>
+<p>Cannot select or copy text or graphics.</p>
+</dd>
+<dt><strong>-no-annot</strong></dt>
+<dd>
+<p>Cannot add or change form fields or annotations.</p>
+</dd>
+<dt><strong>-no-forms</strong></dt>
+<dd>
+<p>Cannot edit form fields.</p>
+</dd>
+<dt><strong>-no-extract</strong></dt>
+<dd>
+<p>Cannot extract text or graphics.</p>
+</dd>
+<dt><strong>-no-assemble</strong></dt>
+<dd>
+<p>Cannot, for example, merge files.</p>
+</dd>
+<dt><strong>-no-hq-print</strong></dt>
+<dd>
+<p>Cannot print high-quality.</p>
+</dd>
+</dl>
+<p>Note: Adobe Acrobat and Adobe Reader may show slightly different
+permissions in info dialogues – this is a result of policy changes and
+not a bug in Cpdf. You may need to experiment.</p>
+<dl>
+<dt><strong>cpdf -decrypt</strong> <strong>in.pdf owner=&lt;owner
+password&gt;</strong> [-decrypt-force] <strong>-o out.pdf</strong></dt>
+<dd>
+<p>Decrypt a document, given its owner password.</p>
+</dd>
+<dt><strong>-decrypt-force</strong></dt>
+<dd>
+<p>Decrypt even without the owner password, using just the user
+password. The user password is often blank.</p>
+</dd>
+</dl>
+<h1 id="compression">5. COMPRESSION</h1>
+<p><strong>cpdf -decompress</strong> <strong>in.pdf</strong>
+[-just-content] [-jbig2dec &lt;path&gt;] <strong>-o out.pdf</strong></p>
+<p>Decompress the streams in a PDF file, for instance to manually
+inspect it.</p>
+<dl>
+<dt><strong>-just-content</strong></dt>
+<dd>
+<p>Only decompress page content streams.</p>
+</dd>
+<dt><strong>-jbig2dec</strong> &lt;path&gt;</dt>
+<dd>
+<p>Give the path to the jbig2dec program which Cpdf uses, if available,
+to decompress JBIG2 streams.</p>
+</dd>
+</dl>
+<p><strong>cpdf -compress in.pdf -o out.pdf</strong></p>
+<p>Compress any streams which are uncompressed using the FlateDecode
+method, with the exception of metadata streams.</p>
+<p><strong>cpdf -squeeze in.pdf</strong> [-squeeze-log-to
+&lt;filename&gt;] [-squeeze-no-pagedata] <strong>-o out.pdf</strong></p>
+<p>Squeeze a file by coalescing like objects, and various other
+methods.</p>
+<dl>
+<dt><strong>-squeeze-log-to</strong> &lt;filename&gt;</dt>
+<dd>
+<p>Write the squeeze log to file rather than standard output.</p>
+</dd>
+<dt><strong>-squeeze-no-pagedata</strong></dt>
+<dd>
+<p>Avoid processing page data, making the squeeze process much faster at
+the cost of a little compression.</p>
+</dd>
+</dl>
+<p><strong>cpdf -remove-article-threads in.pdf -o out.pdf</strong></p>
+<p>Remove article threads.</p>
+<p><strong>cpdf -remove-page-piece in.pdf -o out.pdf</strong></p>
+<p>Remove page piece information.</p>
+<p><strong>cpdf -remove-web-capture in.pdf -o out.pdf</strong></p>
+<p>Remove web capture data.</p>
+<p><strong>cpdf -remove-procsets in.pdf -o out.pdf</strong></p>
+<p>Remove ProcSets, a now-irrelevant data structure from early PDFs.</p>
+<p><strong>cpdf -remove-output-intents in.pdf -o out.pdf</strong></p>
+<p>Remove output intents, a colour-matching system for documents
+intended to be printed.</p>
+<h1 id="bookmarks">6. BOOKMARKS</h1>
+<p><strong>cpdf -list-bookmarks</strong> <strong>in.pdf</strong>
+[-utf8]</p>
+<p>Print bookmark data to standard output. The data includes level,
+title, page number linked to, and full link data. Use
+<strong>-utf8</strong> always. For example:</p>
+<pre><code>0 &quot;Part 1&quot; 1 open
+1 &quot;Part 1A&quot; 2 &quot;[2 /XYZ 200 400 null]&quot;
+1 &quot;Part 1B&quot; 3
+0 &quot;Part 2&quot; 4
+1 &quot;Part 2a&quot; 5</code></pre>
+<p><strong>cpdf -list-bookmarks-json</strong> <strong>in.pdf</strong>
+[-preserve-actions]</p>
+<p>Print bookmark data to standard output in JSON format instead. Here
+is a single entry in the JSON array of bookmarks:</p>
+<pre><code>{ &quot;level&quot;: 0,
+  &quot;text&quot;: &quot;1 Basic Usage&quot;,
+  &quot;page&quot;: 17,
+  &quot;open&quot;: false,
+  &quot;target&quot;:
+    [ { &quot;I&quot;: 17 },
+      { &quot;N&quot;: &quot;/XYZ&quot; },
+      { &quot;F&quot;: 85.039 },
+      { &quot;F&quot;: 609.307 },
+      null ]
+  &quot;colour&quot;: [ 0.0, 0.0, 0.0 ],
+  &quot;italic&quot;: false,
+  &quot;bold&quot;: false
+}</code></pre>
+<dl>
+<dt><strong>-preserve-actions</strong></dt>
+<dd>
+<p>Instead of resolving complex destinations types to simple ones, keep
+the originals.</p>
+</dd>
+</dl>
+<p><strong>cpdf -remove-bookmarks in.pdf -o out.pdf</strong></p>
+<p>Remove all bookmarks from a PDF.</p>
+<p><strong>cpdf -add-bookmarks &lt;filename&gt; in.pdf -o
+out.pdf</strong></p>
+<p>Add bookmarks, given an old-style bookmark file.</p>
+<p><strong>cpdf -add-bookmarks-json &lt;filename&gt; in.pdf -o
+out.pdf</strong></p>
+<p>Add bookmarks, given a new-style JSON bookmark file.</p>
+<p><strong>cpdf -bookmarks-open-to-level &lt;n&gt; in.pdf -o
+out.pdf</strong></p>
+<p>Set all bookmarks up to and including a given level to be open.</p>
+<p><strong>cpdf -table-of-contents</strong> <strong>in.pdf</strong>
+[-toc-title &lt;string&gt;] [-toc-no-bookmark] [-toc-dot-leaders] [-font
+&lt;font&gt;] [-font-size &lt;n&gt;] [-embed-std14 &lt;path&gt;]
+[-process-struct-trees] [-subformat &lt;subformat&gt;] <strong>-o
+out.pdf</strong></p>
+<p>Generate a typeset table of contents from existing bookmarks, adding
+it to the beginning of the document.</p>
+<dl>
+<dt><strong>-toc-title</strong> &lt;string&gt;</dt>
+<dd>
+<p>Title (default is “Table of Contents”).</p>
+</dd>
+<dt><strong>-toc-no-bookmark</strong></dt>
+<dd>
+<p>Do not add an entry for the new table of contents in the document’s
+bookmarks.</p>
+</dd>
+<dt><strong>-toc-dot-leaders</strong></dt>
+<dd>
+<p>Add dot leaders.</p>
+</dd>
+<dt><strong>-font</strong> &lt;font&gt;</dt>
+<dd>
+<p>Give the font (default Times Roman).</p>
+</dd>
+<dt><strong>-font-size</strong> &lt;n&gt;</dt>
+<dd>
+<p>Give the font size (default 12pt).</p>
+</dd>
+<dt><strong>-embed-std14</strong></dt>
+<dd>
+<p>Embed standard 14 fonts given their path (see cpdfmanual.pdf for
+details).</p>
+</dd>
+<dt><strong>-process-struct-trees</strong></dt>
+<dd>
+<p>Create a structure tree for the new table of contents and merge it
+with the document’s.</p>
+</dd>
+<dt><strong>-subformat</strong> &lt;subformat&gt;</dt>
+<dd>
+<p>Add <strong>-subformat “PDF/UA-2”</strong> when adding a table of
+contents to a PDF/UA-2 file to keep compatibility.</p>
+</dd>
+</dl>
+<h1 id="presentations">7. PRESENTATIONS</h1>
+<p><strong>cpdf -presentation in.pdf</strong> [&lt;range&gt;] <strong>-o
+out.pdf</strong> [-trans &lt;transition-name&gt;] [-duration
+&lt;float&gt;] [-vertical] [-outward] [-direction &lt;n&gt;]
+[-effect-duration &lt;float&gt;]</p>
+<p>Make a slide-show presentation from a PDF.</p>
+<p><strong>-trans</strong> &lt;transition&gt;</p>
+<p>The transition style, one of <strong>Split</strong>,
+<strong>Blinds</strong>, <strong>Box</strong>, <strong>Wipe</strong>,
+<strong>Dissolve</strong>, <strong>Glitter</strong>.</p>
+<dl>
+<dt><strong>-duration</strong> &lt;n&gt;</dt>
+<dd>
+<p>Time in seconds before presentation advances (default: no automatic
+advancement).</p>
+</dd>
+<dt><strong>-vertical</strong></dt>
+<dd>
+<p>Select vertical blinds for transition type Blinds.</p>
+</dd>
+<dt><strong>-outward</strong></dt>
+<dd>
+<p>Select outward sweep for transition type Box.</p>
+</dd>
+<dt><strong>-direction</strong> &lt;n&gt;</dt>
+<dd>
+<p>Direction for Wipe and Glitter styles. See cpdfmanual.pdf for full
+information.</p>
+</dd>
+<dt><strong>-effect-duration</strong> &lt;n&gt;</dt>
+<dd>
+<p>Length in seconds of the transition itself.</p>
+</dd>
+</dl>
+<h1 id="text-and-stamps">8. TEXT AND STAMPS</h1>
+<p><strong>cpdf [-stamp-on | -stamp-under] stamp.pdf</strong>
+<strong>in.pdf</strong> [&lt;range&gt;] [-scale-stamp-to-fit]
+[&lt;positioning command&gt;] [-relative-to-cropbox]
+[-process-struct-trees] [-fast] <strong>-o out.pdf</strong></p>
+<p>Stamp a one-page PDF over or under each page in the given range. The
+positioning commands described later in this chapter may be used to
+choose where to stamp it (default, bottom left of media box).</p>
+<dl>
+<dt><strong>-scale-stamp-to-fit</strong></dt>
+<dd>
+<p>Scale the stamp to fit the page before applying it.</p>
+</dd>
+<dt><strong>-relative-to-cropbox</strong></dt>
+<dd>
+<p>Take the positioning command relative to the crop box rather than the
+media box.</p>
+</dd>
+<dt><strong>-process-struct-trees</strong></dt>
+<dd>
+<p>Maintain tagged PDF. The main file will keep its structure; the stamp
+will be marked as an artifact.</p>
+</dd>
+</dl>
+<p><strong>cpdf -combine-pages over.pdf under.pdf</strong> [-fast]
+[-prerotate] [-no-warn-rotate] [-process-struct-trees] [-underneath]
+[-stamp-scale-to-fit] <strong>-o out.pdf</strong></p>
+<p>Combine the pages of two PDFs, page 1 of the first with page 1 of the
+second and so on.</p>
+<dl>
+<dt><strong>-prerotate</strong></dt>
+<dd>
+<p>Remove any rotation differences between the files before
+combining.</p>
+</dd>
+<dt><strong>-no-warn-rotate</strong></dt>
+<dd>
+<p>Do not warn of unresolved rotation differences.</p>
+</dd>
+<dt><strong>-underneath</strong></dt>
+<dd>
+<p>Reverse the order of “over” and “under” files.</p>
+</dd>
+<dt><strong>-process-struct-trees</strong></dt>
+<dd>
+<p>Maintain tagged PDF. The “under” file will keep its structure; the
+“over” file will be marked as an artifact.</p>
+</dd>
+</dl>
+<p><strong>cpdf [-add-text &lt;string&gt; | -add-rectangle “&lt;x
+size&gt; &lt;y size&gt;”]</strong> [-font &lt;fontname&gt;] [-font-size
+&lt;n&gt;] [-load-ttf &lt;name&gt;=&lt;filename&gt;] [-embed-std14
+&lt;path&gt;] [-color &lt;color&gt;] [-line-spacing &lt;n&gt;]
+[-outline] [-linewidth &lt;n&gt;] [-underneath] [-relative-to-cropbox]
+[-prerotate] [-no-warn-rotate] [-bates &lt;n&gt;] [-bates-at-range
+&lt;n&gt;] [-bates-pad-to &lt;n&gt;] [-opacity &lt;n&gt;] [-midline]
+[-topline] [-fast] [-process-struct-trees] <strong>in.pdf</strong>
+[&lt;range&gt;] <strong>-o out.pdf</strong></p>
+<p>Add text to a PDF. Various special codes for page numbers or time and
+date may be used. For example:</p>
+<pre><code>%Page          Page number in arabic notation (1, 2, 3. . . )
+%PageDiv2      Page number in arabic notation divided by two
+%roman         Page number in lower-case roman notation (i, ii, iii. . . )
+%Roman         Page number in upper-case roman notation (I, II, III. . . )
+%EndPage       Last page of document in arabic notation
+%Label         The page label of the page
+%EndLabel      The page label of the last page
+%filename      The full file name of the input document
+%URL[text|URL] Add text, which links to URL (does not work for diagonal text)
+%Bookmark&lt;n&gt;   Bookmark text at level n (0, 1, 2, 3, 4)
+%Bates         Bates number</code></pre>
+<p>And date and time formats:</p>
+<pre><code>%a Abbreviated weekday name (Sun, Mon etc.)
+%A Full weekday name (Sunday, Monday etc.)
+%b Abbreviated month name (Jan, Feb etc.)
+%B Full month name (January, February etc.)
+%d Day of the month (01-31)
+%e Day of the month (1-31)
+%H Hour in 24-hour clock (00-23)
+%I Hour in 12-hour clock (01-12)
+%j Day of the year (001-366)
+%m Month of the year (01-12)
+%M Minute of the hour (00-59)
+%p &quot;a.m&quot; or &quot;p.m&quot;
+%S Second of the minute (00-61)
+%T Same as %H:%M:%S
+%u Weekday (1-7, 1 = Sunday)
+%w Weekday (0-6, 0 = Sunday)
+%Y Year (0000-9999)
+%% The % character</code></pre>
+<p>\n may be used to demarcate multiple lines.</p>
+<dl>
+<dt><strong>-font</strong> &lt;font&gt;</dt>
+<dd>
+<p>Give the font (default Times Roman). Options are:</p>
+</dd>
+</dl>
+<pre><code>Times-Roman
+Times-Bold
+Times-Italic
+Times-BoldItalic
+Helvetica
+Helvetica-Bold
+Helvetica-Oblique
+Helvetica-BoldOblique
+Courier
+Courier-Bold
+Courier-Oblique
+Courier-BoldOblique</code></pre>
+<dl>
+<dt><strong>-font-size</strong> &lt;n&gt;</dt>
+<dd>
+<p>Give the font size (default 12pt).</p>
+</dd>
+<dt><strong>-load-ttf</strong> &lt;name&gt;=&lt;filename&gt;</dt>
+<dd>
+<p>Load a truetype font, and give it name which may be used with -font.
+For example <strong>-load-ttf A=NotoSans-Black.ttf</strong>.</p>
+</dd>
+<dt><strong>-embed-std14</strong> &lt;path&gt;</dt>
+<dd>
+<p>Embed the standard 14 fonts given the path to the URW Base35 free
+fonts.</p>
+</dd>
+<dt><strong>-color</strong> &lt;color&gt;</dt>
+<dd>
+<p>Choose the text colour using one (Grey), three (RGB), or four (CMYK)
+numbers from 0-1. E.g <strong>-color “0.5 0.4 0.5”</strong>.</p>
+</dd>
+<dt><strong>-line-spacing</strong> &lt;n&gt;</dt>
+<dd>
+<p>Set the spacing for multi-line text (default 1).</p>
+</dd>
+<dt><strong>-outline</strong></dt>
+<dd>
+<p>Use outline text.</p>
+</dd>
+<dt><strong>-linewidth</strong> &lt;n&gt;</dt>
+<dd>
+<p>Line width for outline text.</p>
+</dd>
+<dt><strong>-underneath</strong></dt>
+<dd>
+<p>Put the text underneath the page instead of on top of the page.</p>
+</dd>
+<dt><strong>-relative-to-cropbox</strong></dt>
+<dd>
+<p>Positions are relative to the crop box, rather than the media
+box.</p>
+</dd>
+<dt><strong>-prerotate</strong></dt>
+<dd>
+<p>Remove any viewing rotation before adding text.</p>
+</dd>
+<dt><strong>-no-warn-rotate</strong></dt>
+<dd>
+<p>Do not warn of unresolved viewing rotation.</p>
+</dd>
+<dt><strong>-bates</strong> &lt;n&gt;</dt>
+<dd>
+<p>Set the bates number for use with <strong>%Bates</strong>.</p>
+</dd>
+<dt><strong>-bates-at-range</strong> &lt;n&gt;</dt>
+<dd>
+<p>Set the bates number for the first page in the range.</p>
+</dd>
+<dt><strong>-bates-pad-to</strong> &lt;n&gt;</dt>
+<dd>
+<p>Pad bates numbers to a given number of leading zeros.</p>
+</dd>
+<dt><strong>-opacity</strong> &lt;n&gt;</dt>
+<dd>
+<p>Set text opacity. Wholly opaque is 1, wholly transparent is 0.</p>
+</dd>
+<dt><strong>-midline</strong></dt>
+<dd>
+<p>Position is relative to the midline of text rather than the
+baseline.</p>
+</dd>
+<dt><strong>-topline</strong></dt>
+<dd>
+<p>Position is relative to the topline of text rather than the
+baseline.</p>
+</dd>
+<dt><strong>-process-struct-trees</strong></dt>
+<dd>
+<p>Maintain tagged PDF, for example with PDF/UA. The main file will keep
+its structure; the stamped text will be marked as an artifact.</p>
+</dd>
+</dl>
+<p>Positioning commands:</p>
+<dl>
+<dt><strong>-pos-left</strong> “&lt;x&gt; &lt;y&gt;”</dt>
+<dd>
+<p>Position the left of the baseline of the text at (x, y).</p>
+</dd>
+<dt><strong>-pos-center</strong> “&lt;x&gt; &lt;y&gt;”</dt>
+<dd>
+<p>Position the center of the baseline of the text at (x, y).</p>
+</dd>
+<dt><strong>-pos-right</strong> “&lt;x&gt; &lt;y&gt;”</dt>
+<dd>
+<p>Position the right of the baseline of the text at (x, y).</p>
+</dd>
+<dt><strong>-top</strong> &lt;n&gt;</dt>
+<dd>
+<p>Position the baseline of the text n pts from the top middle of the
+page.</p>
+</dd>
+<dt><strong>-topleft</strong> &lt;n&gt;</dt>
+<dd>
+<p>Position the left of the baseline of the text n pts below and right
+of the top left of the page.</p>
+</dd>
+<dt><strong>-topleft</strong> “&lt;x&gt; &lt;y&gt;”</dt>
+<dd>
+<p>Position the left of the baseline of the text y pts below and x pts
+right of the top left of the page.</p>
+</dd>
+<dt><strong>-topright</strong> &lt;n&gt;</dt>
+<dd>
+<p>Position the right of the baseline of the text n pts below and left
+of the top right of the page.</p>
+</dd>
+<dt><strong>-topright</strong> “&lt;x&gt; &lt;y&gt;”</dt>
+<dd>
+<p>Position the right of the baseline of the text y pts below and x pts
+left of the top right of the page.</p>
+</dd>
+<dt><strong>-left</strong> &lt;n&gt;</dt>
+<dd>
+<p>Position the left of the baseline of the text n pts right of the left
+middle of the page.</p>
+</dd>
+<dt><strong>-bottomleft</strong> &lt;n&gt;</dt>
+<dd>
+<p>Position the left of the baseline of the text n pts up and right of
+the bottom left of the page.</p>
+</dd>
+<dt><strong>-bottomleft</strong> “&lt;x&gt; &lt;y&gt;”</dt>
+<dd>
+<p>Position the left of the baseline of the text y pts up and x pts
+right of the bottom left of the page.</p>
+</dd>
+<dt><strong>-bottom</strong> &lt;n&gt;</dt>
+<dd>
+<p>Position the center of the baseline of the text n pts up from the
+bottom middle of the page.</p>
+</dd>
+<dt><strong>-bottomright</strong> &lt;n&gt;</dt>
+<dd>
+<p>Position the right of the baseline of the text n pts up and left from
+the bottom right of the page.</p>
+</dd>
+<dt><strong>-bottomright</strong> “&lt;x&gt; &lt;y&gt;”</dt>
+<dd>
+<p>Position the right of the baseline of the text y pts up and x pts
+left from the bottom right of the page.</p>
+</dd>
+<dt><strong>-right</strong> &lt;n&gt;</dt>
+<dd>
+<p>Position the right of the baseline of the text n pts left of the
+center right of the page.</p>
+</dd>
+<dt><strong>-diagonal</strong></dt>
+<dd>
+<p>Position text diagonally, bottom left to top right.</p>
+</dd>
+<dt><strong>-reverse-diagonal</strong></dt>
+<dd>
+<p>Position text diagonally, top left to bottom right.</p>
+</dd>
+<dt><strong>-center</strong></dt>
+<dd>
+<p>Position text centered on the page.</p>
+</dd>
+<dt><strong>-justify-left</strong></dt>
+<dd>
+<p>Set left justification for multi-line text. Default depends upon
+position.</p>
+</dd>
+<dt><strong>-justify-right</strong></dt>
+<dd>
+<p>Set right justification for multi-line text. Default depends upon
+position.</p>
+</dd>
+<dt><strong>-justify-center</strong></dt>
+<dd>
+<p>Set center justification for multi-line text. Default depends upon
+position.</p>
+</dd>
+</dl>
+<p><strong>cpdf -remove-text in.pdf</strong> [&lt;range&gt;] <strong>-o
+out.pdf</strong></p>
+<p>Remove text previously added by Cpdf.</p>
+<p><strong>cpdf -prepend-content &lt;content&gt; in.pdf</strong>
+[&lt;range&gt;] <strong>-o out.pdf</strong></p>
+<p>A low-level operation to prepend raw content to the beginning of page
+streams.</p>
+<p><strong>cpdf -postpend-content &lt;content&gt; in.pdf</strong>
+[&lt;range&gt;] <strong>-o out.pdf</strong></p>
+<p>A low-level operation to postpend raw content to the end of page
+streams.</p>
+<p><strong>cpdf -stamp-as-xobject stamp.pdf in.pdf</strong>
+[&lt;range&gt;] <strong>-o out.pdf</strong></p>
+<p>A low-level operation to add stamp.pdf as a Form XObject in the given
+pages of a PDF and write to standard output its name.</p>
+<h1 id="multipage-facilities">9. MULTIPAGE FACILITIES</h1>
+<p><strong>cpdf [-pad-before | -pad-after] in.pdf</strong>
+[&lt;range&gt;] [-pad-with pad.pdf] <strong>-o out.pdf</strong></p>
+<p>Add blank pages before or after each page in the given range.</p>
+<dl>
+<dt><strong>-pad-with</strong> &lt;filename&gt;</dt>
+<dd>
+<p>Use a separate PDF to act as the padding.</p>
+</dd>
+<dt><strong>cpdf -pad-every &lt;n&gt; in.pdf</strong> [-pad-with
+pad.pdf] <strong>-o out.pdf</strong></dt>
+<dd>
+<p>Add a blank page after every n pages.</p>
+</dd>
+<dt><strong>-pad-with</strong> &lt;filename&gt;</dt>
+<dd>
+<p>Use a separate PDF to act as the padding.</p>
+</dd>
+</dl>
+<p><strong>cpdf [-pad-multiple | -pad-multiple-before]</strong>
+[&lt;n&gt;] <strong>in.pdf -o out.pdf</strong></p>
+<p>Add as many blank pages as are required before or after the original
+pages to make the file’s length a multiple of the given number of
+pages</p>
+<p><strong>cpdf -redact</strong> <strong>in.pdf</strong> [&lt;range&gt;]
+[-process-struct-trees] <strong>-o out.pdf</strong></p>
+<p>Remove the content of the pages in the given range entirely,
+including annotations and any resources.</p>
+<dl>
+<dt><strong>-process-struct-trees</strong></dt>
+<dd>
+<p>Process the document’s structure tree to remove any parts which are
+marked as relating to the now-redacted pages.</p>
+</dd>
+</dl>
+<p><strong>cpdf [-impose &lt;pagesize&gt; | impose-xy “&lt;x&gt;
+&lt;y&gt;”]</strong> <strong>in.pdf</strong> [-impose-columns]
+[-impose-rtl] [-impose-btt] [-impose-margin &lt;n&gt;] [-impose-spacing
+&lt;n&gt;] [-impose-linewidth &lt;n&gt;] [-fast] [-process-struct-trees]
+<strong>-o out.pdf</strong></p>
+<p>Cpdf has two imposition operations:</p>
+<p><strong>-impose</strong> fits multiple pages onto a given page size
+e.g <strong>-impose a4portrait</strong> or <strong>-impose “8in
+12in”</strong></p>
+<p><strong>-impose-xy</strong> builds an output page with the x pages
+horizontally and y pages vertically e.g <strong>-impose-xy “2
+3”</strong></p>
+<dl>
+<dt><strong>-impose-columns</strong></dt>
+<dd>
+<p>Lay the pages out in columns rather than rows.</p>
+</dd>
+<dt><strong>-impose-rtl</strong></dt>
+<dd>
+<p>Lay the pages out right to left.</p>
+</dd>
+<dt><strong>-impose-btt</strong></dt>
+<dd>
+<p>Lay the pages out bottom to top.</p>
+</dd>
+<dt><strong>-impose-margin</strong> &lt;n&gt;</dt>
+<dd>
+<p>Add a margin around the edge of each page. When using
+<strong>-impose-xy</strong> the page size increases; with
+<strong>-impose</strong> the pages are scaled.</p>
+</dd>
+<dt><strong>-impose-spacing</strong> &lt;n&gt;</dt>
+<dd>
+<p>Add spacing between rows and columns. When using
+<strong>-impose-xy</strong> the page size increases; with
+<strong>-impose</strong> the pages are scaled.</p>
+</dd>
+<dt><strong>-impose-linewidth</strong> &lt;n&gt;</dt>
+<dd>
+<p>Add a border around each input page. With <strong>-impose</strong>
+the pages are scaled after the border is added, so you must account for
+this yourself.</p>
+</dd>
+<dt><strong>-process-struct-trees</strong></dt>
+<dd>
+<p>Mark the file’s content as an artifact for the purposes of
+imposition.</p>
+</dd>
+</dl>
+<p><strong>cpdf -twoup-stack</strong> <strong>in.pdf</strong> [-fast]
+[-process-struct-trees] <strong>-o out.pdf</strong></p>
+<p><strong>cpdf -twoup</strong> <strong>in.pdf</strong> [-fast]
+[-process-struct-trees] <strong>-o out.pdf</strong></p>
+<p>Two old imposition functions which can now both be done with
+<strong>-impose</strong> / <strong>-impose-xy</strong>. The
+<strong>-twoup-stack</strong> operation puts two logical pages on each
+physical page, rotating them 90 degrees to do so. The new mediabox is
+thus larger. Whereas the <strong>-twoup</strong> operation does the
+same, but scales the new sides down so that the media box is
+unchanged.</p>
+<dl>
+<dt><strong>-process-struct-trees</strong></dt>
+<dd>
+<p>Mark the file’s content as an artifact for the purposes of
+imposition.</p>
+</dd>
+</dl>
+<p><strong>cpdf -chop “&lt;x&gt; &lt;y&gt;”</strong>
+<strong>in.pdf</strong> [&lt;range&gt;] [-chop-columns] [-chop-rtl]
+[-chop-btt] <strong>-o out.pdf</strong></p>
+<p>The <strong>-chop</strong> operation cuts up a page into multiple
+pages, according to the chosen grid.</p>
+<dl>
+<dt><strong>-chop-columns</strong></dt>
+<dd>
+<p>Arrange by columns instead of rows.</p>
+</dd>
+<dt><strong>-chop-rtl</strong></dt>
+<dd>
+<p>Arrange right to left.</p>
+</dd>
+<dt><strong>-chop-btt</strong></dt>
+<dd>
+<p>Arrange bottom to top.</p>
+</dd>
+</dl>
+<p><strong>cpdf [-chop-h &lt;y&gt; | -chop-v &lt;x&gt;]</strong>
+<strong>in.pdf</strong> [&lt;range&gt;] [-chop-columns] <strong>-o
+out.pdf</strong></p>
+<p>Chop each page into two, vertically or horizontally, at the given
+position. E.g <strong>-chop-h 200pt</strong>.</p>
+<dl>
+<dt><strong>-chop-columns</strong></dt>
+<dd>
+<p>Reverse the order of pages in the output.</p>
+</dd>
+</dl>
+<h1 id="annotations">10. ANNOTATIONS</h1>
+<p><strong>cpdf -list-annotations in.pdf</strong> [&lt;range&gt;]</p>
+<p>List textual content of annotations to standard output. Each
+annotation is preceded by the page number and followed by a newline.</p>
+<p><strong>cpdf -list-annotations-json in.pdf</strong>
+[&lt;range&gt;]</p>
+<p>List annotation objects in JSON format. This includes all ancillary
+objects, to support round-tripping. See cpdfmanual.pdf for full format
+details.</p>
+<p><strong>cpdf -set-annotations &lt;filename&gt;</strong>
+<strong>in.pdf</strong> [&lt;range&gt;] [-underneath] <strong>-o
+out.pdf</strong></p>
+<p>Set annotations from a JSON file. They will be added on top of any
+annotations already present.</p>
+<dl>
+<dt><strong>-underneath</strong></dt>
+<dd>
+<p>Put the annotations underneath instead of on top of existing
+ones.</p>
+</dd>
+</dl>
+<p><strong>cpdf -copy-annotations from.pdf to.pdf</strong>
+[&lt;range&gt;] <strong>-o out.pdf</strong></p>
+<p>Copy annotations from <strong>from.pdf</strong> to
+<strong>to.pdf</strong>.</p>
+<p><strong>cpdf -remove-annotations in.pdf</strong> [&lt;range&gt;]
+<strong>-o out.pdf</strong></p>
+<p>Remove annotations from the document.</p>
+<h1 id="document-information-and-metadata">11. DOCUMENT INFORMATION AND
+METADATA</h1>
+<p><strong>cpdf -info[-json]</strong> <strong>in.pdf</strong> [-utf8]
+[-in | -cm | -mm]</p>
+<p>Print info about a document in plain text (<strong>-info</strong>) or
+JSON (<strong>-info-json</strong>). For example:</p>
+<pre><code>cpdf -info pdf_reference.pdf
+Encryption: Not encrypted
+Permissions: 
+Linearized: true
+Object streams: true
+ID: &lt;0b1f990718e2a92c0c112fbf08b233fb&gt; &lt;b2f1dbee369e11d9b951000393c97fd8&gt;
+Version: 1.5
+Pages: 1236
+Title: PDF Reference, version 1.6
+Author: Adobe Systems Incorporated
+Subject: Adobe Portable Document Format (PDF)
+Keywords: 
+Creator: FrameMaker 7.0
+Producer: Acrobat Distiller 6.0.1 for Macintosh
+Created: D:20041114084116Z
+Modified: D:20041114163850-08&#39;00&#39;
+Trapped: False
+PageMode: UseOutlines
+PageLayout: 
+OpenAction: [1/XYZ -32768 -32768 1]
+HideToolbar: 
+HideMenubar: 
+HideWindowUI: 
+FitWindow: 
+CenterWindow: 
+DisplayDocTitle: True
+NonFullScreenPageMode: 
+AcroForm: False
+XFA: False
+Marked: False
+UserProperties: False
+Suspects: False
+MediaBox: 0.000000 0.000000 612.000000 792.000000
+CropBox: 41.000000 63.000000 572.000000 729.000000
+BleedBox: 
+TrimBox: various
+ArtBox: various
+Subformats: 
+Language: en-us
+XMP dc:title: PDF Reference, version 1.6
+XMP dc:creator: Adobe Systems Incorporated
+XMP dc:description: Adobe Portable Document Format (PDF)</code></pre>
+<dl>
+<dt><strong>-utf8</strong></dt>
+<dd>
+<p>Output in UTF8 format (plain text only)</p>
+</dd>
+<dt><strong>-in</strong> / <strong>-mm</strong> /
+<strong>-cm</strong></dt>
+<dd>
+<p>Output dimensions in inches, millimetres or centimetres instead of
+points.</p>
+</dd>
+</dl>
+<p><strong>cpdf -page-info[-json]</strong> <strong>in.pdf</strong>
+[&lt;range&gt;] [-in | -cm | -mm]</p>
+<p>List page information in plain (<strong>-page-info</strong>) or JSON
+(<strong>-page-info-json</strong>) format.</p>
+<pre><code>cpdf -page-info 14psfonts.pdf
+Page 1:
+Label: i
+MediaBox: 0.000000 0.000000 600.000000 450.000000
+CropBox: 200.000000 200.000000 500.000000 500.000000
+BleedBox:
+TrimBox:
+ArtBox:
+Rotation: 0
+Annotations: 0</code></pre>
+<dl>
+<dt><strong>-in</strong> / <strong>-mm</strong> /
+<strong>-cm</strong></dt>
+<dd>
+<p>Output dimensions in inches, millimetres or centimetres instead of
+points.</p>
+</dd>
+</dl>
+<p><strong>cpdf -pages in.pdf</strong></p>
+<p>Print the number of pages in the file.</p>
+<p><strong>cpdf -set-title &lt;string&gt;</strong>
+<strong>in.pdf</strong> [-also-set-xmp] [-just-set-xmp] <strong>-o
+out.pdf</strong></p>
+<p><strong>cpdf -set-author &lt;string&gt;</strong>
+<strong>in.pdf</strong> [-also-set-xmp] [-just-set-xmp] <strong>-o
+out.pdf</strong></p>
+<p><strong>cpdf -set-subject &lt;string&gt;</strong>
+<strong>in.pdf</strong> [-also-set-xmp] [-just-set-xmp] <strong>-o
+out.pdf</strong></p>
+<p><strong>cpdf -set-keywords &lt;string&gt;</strong>
+<strong>in.pdf</strong> [-also-set-xmp] [-just-set-xmp] <strong>-o
+out.pdf</strong></p>
+<p><strong>cpdf -set-creator &lt;string&gt;</strong>
+<strong>in.pdf</strong> [-also-set-xmp] [-just-set-xmp] <strong>-o
+out.pdf</strong></p>
+<p><strong>cpdf -set-producer &lt;string&gt;</strong>
+<strong>in.pdf</strong> [-also-set-xmp] [-just-set-xmp] <strong>-o
+out.pdf</strong></p>
+<p>Set metadata.</p>
+<p><strong>cpdf -set-create &lt;date&gt;</strong>
+<strong>in.pdf</strong> [-also-set-xmp] [-just-set-xmp] <strong>-o
+out.pdf</strong></p>
+<p><strong>cpdf -set-modify &lt;date&gt;</strong>
+<strong>in.pdf</strong> [-also-set-xmp] [-just-set-xmp] <strong>-o
+out.pdf</strong></p>
+<p>Set creation or modification dates. See Appendix A of cpdfmanual.pdf
+for details of the PDF date format.</p>
+<p><strong>cpdf -set-trapped in.pdf</strong> [-also-set-xmp]
+[-just-set-xmp] <strong>-o out.pdf</strong></p>
+<p><strong>cpdf -set-untrapped in.pdf</strong> [-also-set-xmp]
+[-just-set-xmp] <strong>-o out.pdf</strong></p>
+<p>Set the trapped status of a PDF.</p>
+<dl>
+<dt><strong>-also-set-xmp</strong></dt>
+<dd>
+<p>Set the XMP metadata if the field is present, in addition to setting
+the old-style PDF metadata.</p>
+</dd>
+<dt><strong>-just-set-xmp</strong></dt>
+<dd>
+<p>Just set the XMP metadata, if the field is present, in addition to
+the old-style PDF metadata.</p>
+</dd>
+</dl>
+<p><strong>cpdf -set-page-layout &lt;layout&gt; in.pdf -o
+out.pdf</strong></p>
+<p>Set the page layout: one of <strong>SinglePage</strong>,
+<strong>OneColumn</strong>, <strong>TwoColumnLeft</strong>,
+<strong>TwoColumnRight</strong>, <strong>TwoPageLeft</strong>,
+<strong>TwoPageRight</strong></p>
+<p><strong>cpdf -set-page-mode &lt;mode&gt; in.pdf -o
+out.pdf</strong></p>
+<p>Set the page mode: one of <strong>UseNone</strong>,
+<strong>UseOutlines</strong>, <strong>UseThumbs</strong>,
+<strong>FullScreen</strong>, <strong>UseOC</strong>,
+<strong>UseAttachments</strong>.</p>
+<p><strong>cpdf -set-non-full-screen-page-mode &lt;mode&gt; in.pdf -o
+out.pdf</strong></p>
+<p>Set the non full screen mode for a PDF with FullScreen page mode: one
+of <strong>UseNone</strong>, <strong>UseOutlines</strong>,
+<strong>UseThumbs</strong>, <strong>UseAttachments</strong>.</p>
+<p><strong>cpdf -hide-toolbar &lt;true | false&gt; in.pdf -o
+out.pdf</strong></p>
+<p>Hide or reveal the viewer’s toolbar.</p>
+<p><strong>cpdf -hide-menubar &lt;true | false&gt; in.pdf -o
+out.pdf</strong></p>
+<p>Hide or reveal the viewer’s menubar.</p>
+<p><strong>cpdf -hide-window-ui &lt;true | false&gt; in.pdf -o
+out.pdf</strong></p>
+<p>Hide or reveal the window’s scroll bars.</p>
+<p><strong>cpdf -fit-window &lt;true | false&gt; in.pdf -o
+out.pdf</strong></p>
+<p>Resize the document’s windows to fit the size of the first page.</p>
+<p><strong>cpdf -center-window &lt;true | false&gt; in.pdf -o
+out.pdf</strong></p>
+<p>Position the document window in the center of the screen.</p>
+<p><strong>cpdf -display-doc-title &lt;true | false&gt; in.pdf -o
+out.pdf</strong></p>
+<p>Display the document title instead of the file name in the title
+bar.</p>
+<p><strong>cpdf -open-at-page &lt;n&gt; in.pdf -o out.pdf</strong></p>
+<p>Set the document to open at the given page number.</p>
+<p><strong>cpdf -open-at-page-fit &lt;n&gt; in.pdf -o
+out.pdf</strong></p>
+<p>Set the document to open at the given page number scaled to fit the
+window.</p>
+<p><strong>cpdf -open-at-page-custom &lt;destination&gt; in.pdf -o
+out.pdf</strong></p>
+<p>Set the document to open at a custom destination. See cpdfmanual.pdf
+for details.</p>
+<p><strong>cpdf -set-language &lt;language&gt; in.pdf -o
+out.pdf</strong></p>
+<p>Set the document’s global language, for example “en-US”</p>
+<p><strong>cpdf -set-metadata &lt;filename&gt; in.pdf -o
+out.pdf</strong></p>
+<p>Replace or add XMP metadata.</p>
+<p><strong>cpdf -remove-metadata in.pdf -o out.pdf</strong></p>
+<p>Remove the main XMP metadata stream.</p>
+<p><strong>cpdf -remove-all-metadata in.pdf -o out.pdf</strong></p>
+<p>Remove all XMP metadata streams.</p>
+<p><strong>cpdf -print-metadata in.pdf</strong></p>
+<p>Print the XMP metadata stream to standard output.</p>
+<p><strong>cpdf -extract-all-metadata in.pdf -o
+&lt;path&gt;</strong></p>
+<p>Extract XMP metadata streams to the given directory.</p>
+<p><strong>cpdf -create-metadata in.pdf -o out.pdf</strong></p>
+<p>Create or replace XMP metadata from old-style metadata.</p>
+<p><strong>cpdf -set-metadata-date &lt;date&gt; in.pdf -o
+out.pdf</strong></p>
+<p>Set the XMP metadata date. See Appendix A in cpdfmanual.pdf for date
+format details.</p>
+<p><strong>cpdf -add-page-labels in.pdf</strong> [&lt;range&gt;]
+[-label-style &lt;style&gt;] [-label-prefix &lt;string&gt;]
+[-label-startval &lt;n&gt;] [-labels-progress] <strong>-o
+out.pdf</strong></p>
+<p>Add page labels to a PDF. Multiple calls may be used to add multiple
+ranges of page labels.</p>
+<dl>
+<dt><strong>-label-style</strong></dt>
+<dd>
+<p>One of <strong>DecimalArabic</strong>,
+<strong>LowercaseRoman</strong>, <strong>UppercaseRoman</strong>,
+<strong>LowercaseLetters</strong>, <strong>UppercaseLetters</strong>,
+<strong>NoLabelPrefixOnly</strong>.</p>
+</dd>
+<dt><strong>-label-prefix</strong></dt>
+<dd>
+<p>The textual prefix for these labels.</p>
+</dd>
+<dt><strong>-label-startval</strong></dt>
+<dd>
+<p>By default the labels begin at page number 1 for each range. To
+override this, we can use <strong>-label-startval</strong>.</p>
+</dd>
+<dt><strong>-labels-progress</strong></dt>
+<dd>
+<p>make sure the start value progresses between sub-ranges when the page
+range specified is disjoint, e.g “1-9, 30-40” or “odd”.</p>
+</dd>
+</dl>
+<p><strong>cpdf -remove-page-labels in.pdf -o out.pdf</strong></p>
+<p>Remove the page labels.</p>
+<p><strong>cpdf -print-page-labels[-json] in.pdf</strong></p>
+<p>Print the page labels in plain text
+(<strong>-print-page-labels</strong>) or JSON
+(<strong>-print-page-labels-json</strong>) format.</p>
+<p><strong>cpdf -composition[-json] in.pdf</strong></p>
+<p>Print the composition of a PDF, showing how much space is taken by
+images, fonts etc.</p>
+<pre><code>cpdf -composition cpdfmanual.pdf
+Images: 0 bytes (0.00%)
+Fonts: 144731 bytes (46.72%)
+Content streams: 132767 bytes (42.85%)
+Structure Info: 0 bytes (0.00%)
+Attached Files: 0 bytes (0.00%)
+XRef Table: 21082 bytes (6.80%)
+Piece Info: 0 bytes (0.00%)
+Unclassified: 11229 bytes (3.62%)</code></pre>
+<h1 id="file-attachments">12. FILE ATTACHMENTS</h1>
+<p><strong>cpdf -attach-file &lt;filename&gt;</strong>
+<strong>in.pdf</strong> [-to-page &lt;n&gt;] [-afd &lt;string&gt;] [-afr
+&lt;relationship&gt;] [-attach-file …] <strong>-o out.pdf</strong></p>
+<p>Attach a file to a PDF, given its filename.</p>
+<dl>
+<dt><strong>-to-page</strong> &lt;n&gt;</dt>
+<dd>
+<p>Instead of attaching globally, add it as an attachment on a single
+page.</p>
+</dd>
+<dt><strong>-afd</strong> &lt;string&gt;</dt>
+<dd>
+<p>Supply the textual description for this attachment.</p>
+</dd>
+<dt><strong>-afr</strong> &lt;relationship&gt;</dt>
+<dd>
+<p>Supply the so-called Relationship for this attachment.</p>
+</dd>
+</dl>
+<p><strong>cpdf -list-attached-files</strong> <strong>in.pdf</strong>
+[-json] [-include-data]</p>
+<p>List attached files.</p>
+<dl>
+<dt><strong>-json</strong></dt>
+<dd>
+<p>List attached files in JSON format. See cpdfmanual.pdf for full
+details.</p>
+</dd>
+<dt><strong>-include-data</strong></dt>
+<dd>
+<p>Include the attachment file data when listing in JSON format.</p>
+</dd>
+</dl>
+<p><strong>cpdf -remove-files in.pdf -o out.pdf</strong></p>
+<p>Remove attached files from a PDF.</p>
+<p><strong>cpdf -dump-attachments in.pdf -o &lt;path&gt;</strong></p>
+<p>Extract the attachments to a given directory.</p>
+<h1 id="images">13. IMAGES</h1>
+<p><strong>cpdf -list-images[-json]</strong> <strong>in.pdf</strong>
+[&lt;range&gt;] [-inline]</p>
+<p>List the images in a file together with their object number, page
+numbers, image name, width, height, size in bytes, bits per pixel,
+colour space, compression method, mask type and mask object number.
+Either in plain text (<strong>-list-images</strong>) or JSON
+(<strong>-list-images-json</strong>).</p>
+<dl>
+<dt><strong>-inline</strong></dt>
+<dd>
+<p>Also list inline images.</p>
+</dd>
+</dl>
+<p><strong>cpdf -list-images-used[-json]</strong>
+<strong>in.pdf</strong> [&lt;range&gt;] [-inline]</p>
+<p><strong>cpdf -image-resolution[-json] &lt;n&gt;</strong>
+<strong>in.pdf</strong> [&lt;range&gt;] [-inline]</p>
+<p>The <strong>-list-images-used</strong> and
+<strong>-list-images-used-json</strong> operations list the images at
+point of use with their page number, image name, width in pixels, height
+in pixels, x resolution, y resolution and object number. Using
+<strong>-image-resolution</strong> or
+<strong>-image-resolution-json</strong> instead reports only such images
+as do not reach a minimum resolution.</p>
+<dl>
+<dt><strong>-inline</strong></dt>
+<dd>
+<p>Also list inline images.</p>
+</dd>
+</dl>
+<p><strong>cpdf -extract-images in.pdf</strong> [&lt;range&gt;] [-im
+&lt;path&gt;] [-p2p &lt;path&gt;] [-dedup | -dedup-perpage] [-raw]
+[-inline] [-merge-masks] <strong>-o &lt;path&gt;</strong></p>
+<p>Extract images to a given path e.g “output/%%%”, which would create
+output/001.jpg, output/002.png and so on. JPEG, JPEG2000 and lossless
+JBIG2 images are extracted directly. Lossy JBIG2 images are extracted in
+sections. Other images are written as PNGs, processed with
+ImageMagick.</p>
+<dl>
+<dt><strong>-im</strong> &lt;path&gt;</dt>
+<dd>
+<p>Provide path to ImageMagick.</p>
+</dd>
+<dt><strong>-p2p</strong> &lt;path&gt;</dt>
+<dd>
+<p>Provide path to pnmtopng if ImageMagick not available.</p>
+</dd>
+<dt><strong>-dedup</strong></dt>
+<dd>
+<p>Deduplicate images, extracting only once even if
+multiply-included.</p>
+</dd>
+<dt><strong>-dedup-per-page</strong></dt>
+<dd>
+<p>Deduplicate images, but only per-page.</p>
+</dd>
+<dt><strong>-raw</strong></dt>
+<dd>
+<p>Output .pnm files instead of .png.</p>
+</dd>
+<dt><strong>-inline</strong></dt>
+<dd>
+<p>Also extract inline images.</p>
+</dd>
+<dt><strong>-merge-masks</strong></dt>
+<dd>
+<p>Merge soft masks with their images when extracting.</p>
+</dd>
+</dl>
+<p><strong>cpdf -extract-single-image &lt;object number&gt;</strong>
+<strong>in.pdf</strong> [-im &lt;path&gt;] [-p2p &lt;path&gt;] [-raw]
+[-merge-masks] <strong>-o &lt;filename&gt;</strong></p>
+<p>Extract a single image, given its object number. Other flags as
+above.</p>
+<p><strong>cpdf -process-images</strong> <strong>in.pdf</strong>
+[&lt;range&gt;] [-process-images-info] [-process-images-force] [-im
+&lt;filename&gt;] [-jbig2enc &lt;filename&gt;] [-jbig2dec
+&lt;filename&gt;] [-lossless-resample[-dpi] &lt;n&gt; |
+-lossless-to-jpeg &lt;n&gt;] [-jpeg-to-jpeg &lt;n&gt;]
+[-jpeg-to-jpeg-scale &lt;n&gt;] [-lossless-to-jpeg2000 &lt;n&gt;]
+[-jpeg2000-to-jpeg2000 &lt;n&gt;] [-jpeg-to-jpeg-dpi &lt;n&gt;]
+[-1bpp-method &lt;method&gt;] [-jbig2-lossy-threshold &lt;n&gt;]
+[-pixel-threshold &lt;n&gt;] [-length-threshold &lt;n&gt;]
+[-percentage-threshold &lt;n&gt;] [-dpi-threshold &lt;n&gt;]
+[-resample-interpolate] <strong>-o out.pdf</strong></p>
+<p>Re-process existing images within the PDF, typically to reduce size.
+For a full commentary, see cpdfmanual.pdf.</p>
+<dl>
+<dt><strong>-process-images-info</strong></dt>
+<dd>
+<p>Show the work being done.</p>
+</dd>
+<dt><strong>-process-images-force</strong></dt>
+<dd>
+<p>Process image even when size would increase.</p>
+</dd>
+<dt><strong>-im</strong> &lt;path&gt;</dt>
+<dd>
+<p>Supply path to ImageMagick.</p>
+</dd>
+<dt><strong>-jbig2enc</strong> &lt;path&gt;</dt>
+<dd>
+<p>Supply path to jbig2enc.</p>
+</dd>
+<dt><strong>-jbig2dec</strong> &lt;path&gt;</dt>
+<dd>
+<p>Supply path to jbig2dec.</p>
+</dd>
+<dt><strong>-lossless-resample</strong> &lt;n&gt;</dt>
+<dd>
+<p>Resample lossless images to the given percentage scale.</p>
+</dd>
+<dt><strong>-lossless-resample-dpi</strong> &lt;n&gt;</dt>
+<dd>
+<p>Resample lossless images to a given DPI resolution.</p>
+</dd>
+<dt><strong>-lossless-to-jpeg</strong> &lt;n&gt;</dt>
+<dd>
+<p>Convert lossless images to JPEG at the given quality level.</p>
+</dd>
+<dt><strong>-jpeg-to-jpeg</strong> &lt;n&gt;</dt>
+<dd>
+<p>Reprocess JPEG images to the given quality level.</p>
+</dd>
+<dt><strong>-jpeg-to-jpeg-scale</strong> &lt;n&gt;</dt>
+<dd>
+<p>Reprocess JPEG images to the given percentage scale.</p>
+</dd>
+<dt><strong>-jpeg-to-jpeg-dpi</strong> &lt;n&gt;</dt>
+<dd>
+<p>Reprocess JPEG images to the given DPI resolution.</p>
+</dd>
+<dt><strong>-lossless-to-jpeg2000</strong> &lt;n&gt;</dt>
+<dd>
+<p>Convert lossless images to JPEG 2000 at the given quality level.</p>
+</dd>
+<dt><strong>-jpeg2000-to-jpeg2000</strong> &lt;n&gt;</dt>
+<dd>
+<p>Reprocess JPEG 2000 images to the given quality level.</p>
+</dd>
+<dt><strong>-1bpp-method</strong> &lt;1bppmethod&gt;</dt>
+<dd>
+<p>Specify method for 1bpp images. One of <strong>JBIG2Lossy</strong>,
+<strong>JBIG2Lossless</strong>, <strong>CCITT</strong>,
+<strong>CCITTG4</strong>.</p>
+</dd>
+<dt><strong>-jbig2-lossy-threshold</strong> &lt;n&gt;</dt>
+<dd>
+<p>Set the threshold for lossy JBIG2 compression.</p>
+</dd>
+<dt><strong>-pixel-threshold</strong> &lt;n&gt;</dt>
+<dd>
+<p>Images below this number of pixels not processed (default 25).</p>
+</dd>
+<dt><strong>-length-threshold</strong> &lt;n&gt;</dt>
+<dd>
+<p>Images with less than this number of bytes not processed (default
+100).</p>
+</dd>
+<dt><strong>-percentage-threshold</strong> &lt;n&gt;</dt>
+<dd>
+<p>Results not below this percentage of original size discarded (default
+90).</p>
+</dd>
+<dt><strong>-dpi-threshold</strong> &lt;n&gt;</dt>
+<dd>
+<p>Only image above this threshold at all use points processed (default
+no dpi threshold).</p>
+</dd>
+<dt><strong>-resample-interpolate</strong></dt>
+<dd>
+<p>Use interpolation when resampling.</p>
+</dd>
+</dl>
+<p><strong>cpdf -rasterize in.pdf</strong> [&lt;range&gt;] [-gs
+&lt;path&gt;] [-rasterize[-gray | -1bpp | -jpeg | -jpeggray]]
+[-rasterize-res &lt;n&gt;] [-rasterize-jpeg-quality &lt;n&gt;]
+[-rasterize-no-antialias | -rasterize-downsample] [-rasterize-annots]
+[-rasterize-alpha] <strong>-o out.pdf</strong></p>
+<p>Rasterize each page, replacing the page content with the rasterized
+version in the output PDF.</p>
+<dl>
+<dt><strong>-gs</strong> &lt;path&gt;</dt>
+<dd>
+<p>Supply path to gs.</p>
+</dd>
+<dt><strong>-rasterize-gray</strong></dt>
+<dd>
+<p>Use grayscale instead of colour.</p>
+</dd>
+<dt><strong>-rasterize-1bpp</strong></dt>
+<dd>
+<p>Use monochrome instead of colour.</p>
+</dd>
+<dt><strong>-rasterize-jpeg</strong></dt>
+<dd>
+<p>Use JPEG instead of lossless compression.</p>
+</dd>
+<dt><strong>-rasterize-jpeggray</strong></dt>
+<dd>
+<p>Use grayscale JPEG instead of lossless compression.</p>
+</dd>
+<dt><strong>-rasterize-res</strong> &lt;n&gt;</dt>
+<dd>
+<p>Set the resolution (default 144dpi).</p>
+</dd>
+<dt><strong>-rasterize-jpeg-quality</strong> &lt;n&gt;</dt>
+<dd>
+<p>Set JPEG image quality (0..100).</p>
+</dd>
+<dt><strong>-rasterize-no-antialias</strong></dt>
+<dd>
+<p>Turn off anti-aliasing.</p>
+</dd>
+<dt><strong>-rasterize-downsample</strong></dt>
+<dd>
+<p>Use better but slower anti-aliasing.</p>
+</dd>
+<dt><strong>-rasterize-annots</strong></dt>
+<dd>
+<p>Rasterize annotations instead of retaining.</p>
+</dd>
+<dt><strong>-rasterize-alpha</strong></dt>
+<dd>
+<p>Produce an alpha channel (lossless only)</p>
+</dd>
+</dl>
+<p><strong>cpdf -output-image in.pdf</strong> [&lt;range&gt;] [-gs
+&lt;path&gt;] [-rasterize[-gray | -1bpp | -jpeg | -jpeggray]
+[-rasterize-res &lt;n&gt;] [-rasterize-jpeg-quality &lt;n&gt;]
+[-rasterize-no-antialias | -rasterize-downsample] [-rasterize-annots]
+[-rasterize-alpha] [-tobox &lt;boxname&gt;] <strong>-o
+&lt;format&gt;</strong></p>
+<p>Output rasterized images for each page to the given folder and format
+e.g “dir/%%%.png” would create dir/001.png and so on. Options as above
+and:</p>
+<dl>
+<dt><strong>-tobox</strong> &lt;boxname&gt;</dt>
+<dd>
+<p>Specify the box to rasterize (default
+<strong>/MediaBox</strong>).</p>
+</dd>
+</dl>
+<h1 id="fonts">14. FONTS</h1>
+<p><strong>cpdf -list-fonts[-json] in.pdf</strong></p>
+<p>List the fonts on each page in a file together with their types.
+Either in plain text (<strong>-list-fonts</strong>) or JSON
+(<strong>-list-fonts-json</strong>) format.</p>
+<p><strong>cpdf -print-font-table &lt;font name&gt;</strong>
+<strong>in.pdf</strong> [-print-font-table-page &lt;n&gt;]</p>
+<p>Print a font table for a given font name and page, e.g:</p>
+<pre><code>cpdf -print-font-table /XYPLPB+NimbusSanL-Bold -print-font-table-page 2 cpdfmanual.pdf
+67 = U+0043 (C - LATIN CAPITAL LETTER C) = /C
+68 = U+0044 (D - LATIN CAPITAL LETTER D) = /D
+70 = U+0046 (F - LATIN CAPITAL LETTER F) = /F
+71 = U+0047 (G - LATIN CAPITAL LETTER G) = /G
+...</code></pre>
+<p><strong>cpdf -copy-font fromfile.pdf</strong> <strong>in.pdf</strong>
+[&lt;range&gt;] -copy-font-page &lt;n&gt; -copy-font-name &lt;name&gt;
+<strong>-o out.pdf</strong></p>
+<p>A low-level operation to copy a font from one file to another.</p>
+<dl>
+<dt><strong>-copy-font-page</strong> &lt;n&gt;</dt>
+<dd>
+<p>The page from which to copy the font.</p>
+</dd>
+<dt><strong>-copy-font-name</strong> &lt;n&gt;</dt>
+<dd>
+<p>The (PDF) name of the font.</p>
+</dd>
+</dl>
+<p><strong>cpdf -remove-fonts in.pdf -o out.pdf</strong></p>
+<p>Remove fonts from a file.</p>
+<p><strong>cpdf -missing-fonts in.pdf</strong></p>
+<p>Report missing fonts - i.e those which are unembedded.</p>
+<p><strong>cpdf -embed-missing-fonts -gs &lt;path to gs&gt; in.pdf -o
+out.pdf</strong></p>
+<p>Use gs to embed missing fonts into a PDF. Note: putting a PDF file
+through gs in this manner may not be lossless: some metadata may not be
+preserved.</p>
+<p><strong>cpdf -extract-font &lt;n&gt;,&lt;pdf font name&gt; in.pdf -o
+out.font</strong></p>
+<p>Extract a font file from a PDF given a page number, font name pair
+e.g:</p>
+<p>cpdf -extract-font 5,/F50 in.pdf -o out.ttf</p>
+<h1 id="pdf-and-json">15. PDF AND JSON</h1>
+<p><strong>cpdf in.pdf -output-json</strong>
+[-output-json-parse-content-streams] [-output-json-no-stream-data]
+[-output-json-decompress-streams] [-output-json-clean-strings] [-utf8]
+<strong>-o out.json</strong></p>
+<p>Convert PDF to a JSON format which may be inspected, or edited and
+round-tripped back into PDF.</p>
+<dl>
+<dt><strong>-output-json-parse-content-streams</strong></dt>
+<dd>
+<p>Parse the content streams into JSON too.</p>
+</dd>
+<dt><strong>-output-json-no-stream-data</strong></dt>
+<dd>
+<p>Elide stream data. This makes a smaller file, but bars
+round-tripping.</p>
+</dd>
+<dt><strong>-output-json-decompress-streams</strong></dt>
+<dd>
+<p>Keep the streams intact, and decompress them.</p>
+</dd>
+<dt><strong>-output-json-clean-strings</strong></dt>
+<dd>
+<p>Deprecated in favour of <strong>-utf8</strong> below.</p>
+</dd>
+<dt><strong>-utf8</strong></dt>
+<dd>
+<p>Use UTF8 rather than PDFDocEncoding for strings, to make them more
+easily editable.</p>
+</dd>
+</dl>
+<p><strong>cpdf -j in.json -o out.pdf</strong></p>
+<p>Convert a JSON file to a PDF file.</p>
+<h1 id="optional-content-groups">16. OPTIONAL CONTENT GROUPS</h1>
+<p><strong>cpdf -ocg-list in.pdf</strong></p>
+<p>List the optional content groups in the PDF, one per line, to
+standard output.</p>
+<p><strong>cpdf -ocg-rename in.pdf -ocg-rename-from &lt;a&gt;
+-ocg-rename-to &lt;b&gt; -o out.pdf</strong></p>
+<p>Rename an optional content group given the old and new names.</p>
+<p><strong>cpdf -ocg-order-all in.pdf -o out.pdf</strong></p>
+<p>Ensure that every optional content group appears in the order
+list.</p>
+<p><strong>cpdf -ocg-coalesce-on-name in.pdf -o out.pdf</strong></p>
+<p>Coalesce optional content groups. For example, if we merge or stamp
+two files both with an OCG called “Layer 1”, we will have two different
+optional content groups. This command will merge them into a single
+optional content group.</p>
+<h1 id="creating-new-pdfs">17. CREATING NEW PDFS</h1>
+<p><strong>cpdf -create-pdf</strong> [-create-pdf-pages &lt;n&gt;]
+[-create-pdf-papersize &lt;papersize&gt;] <strong>-o
+out.pdf</strong></p>
+<p>Create a new PDF (default: one page, A4 portrait).</p>
+<dl>
+<dt><strong>-create-pdf-pages</strong> &lt;n&gt;</dt>
+<dd>
+<p>Give the number of pages.</p>
+</dd>
+<dt><strong>-create-pdf-papersize</strong> &lt;papersize&gt;</dt>
+<dd>
+<p>Give the paper size, e.g “a3landscape” or “200pt 600pt”</p>
+</dd>
+</dl>
+<p><strong>cpdf -typeset &lt;filename&gt;</strong>
+[-create-pdf-papersize &lt;papersize&gt;] [-font &lt;font&gt;]
+[-font-size &lt;n&gt;] [-subformat &lt;subformat&gt;] [-title
+&lt;string&gt;] <strong>-o out.pdf</strong></p>
+<p>Typeset a text file into a PDF.</p>
+<dl>
+<dt><strong>-create-pdf-papersize</strong> &lt;papersize&gt;</dt>
+<dd>
+<p>Give the paper size.</p>
+</dd>
+<dt><strong>-font</strong> &lt;font&gt;</dt>
+<dd>
+<p>The font (default Times-Roman)</p>
+</dd>
+<dt><strong>-font-size</strong> &lt;n&gt;</dt>
+<dd>
+<p>The font size (default 12pt)</p>
+</dd>
+<dt><strong>-subformat</strong> &lt;subformat&gt;</dt>
+<dd>
+<p>Specify PDF/UA-1 or PDF/UA-2 to make a conforming file.</p>
+</dd>
+<dt><strong>-title</strong> &lt;string&gt;</dt>
+<dd>
+<p>Specify a title when using <strong>-subformat</strong> for a PDF/UA
+file.</p>
+</dd>
+</dl>
+<p><strong>cpdf -jpeg &lt;filename&gt;</strong> [-subformat
+&lt;subformat&gt;] [-title &lt;string&gt;] <strong>-o
+out.pdf</strong></p>
+<p><strong>cpdf -png &lt;filename&gt;</strong> [-subformat
+&lt;subformat&gt;] [-title &lt;string&gt;] <strong>-o
+out.pdf</strong></p>
+<p><strong>cpdf -jpeg2000 &lt;filename&gt;</strong> [-subformat
+&lt;subformat&gt;] [-title &lt;string&gt;] <strong>-o
+out.pdf</strong></p>
+<p>Build a PDF from an image file (JPEG, PNG or JPEG2000).</p>
+<dl>
+<dt><strong>-subformat</strong> &lt;subformat&gt;</dt>
+<dd>
+<p>Specify PDF/UA-1 or PDF/UA-2 to make a conforming file.</p>
+</dd>
+<dt><strong>-title</strong> &lt;string&gt;</dt>
+<dd>
+<p>Specify a title when using <strong>-subformat</strong> for a PDF/UA
+file.</p>
+</dd>
+</dl>
+<p><strong>cpdf</strong> [-jbig2-global &lt;filename&gt;] <strong>-jbig2
+&lt;filename&gt;</strong> [-jbig2-global | -jbig2-global-clear] [-jbig2
+&lt;filename&gt;] … [-subformat &lt;subformat&gt;] [-title
+&lt;string&gt;] <strong>-o out.pdf</strong></p>
+<p>Make a multi-page PDF from one or more PDF-appropriate JBIG2
+fragments prepared by the jbig2enc program. For example, in lossless
+mode:</p>
+<p><strong>cpdf -jbig2 1.jbig2 -jbig2 2.jbig2 -jbig2 3.jbig2 -o
+out.pdf</strong></p>
+<p>In lossy mode, jbig2globals segments may be specified:</p>
+<p><strong>cpdf -jbig2-global 0.jbig2globals -jbig2 1.jbig2 -jbig2
+2.jbig2 -jbig2 3.jbig2 -o out.pdf</strong></p>
+<dl>
+<dt><strong>-jbig2-global</strong> &lt;filename&gt;</dt>
+<dd>
+<p>Change the jbig2global segment in use.</p>
+</dd>
+<dt><strong>-jbig2-global-clear</strong></dt>
+<dd>
+<p>Cease use of jbig2global segment, and return to lossless mode.</p>
+</dd>
+<dt><strong>-subformat</strong> &lt;subformat&gt;</dt>
+<dd>
+<p>Specify PDF/UA-1 or PDF/UA-2 to make a conforming file.</p>
+</dd>
+<dt><strong>-title</strong> &lt;string&gt;</dt>
+<dd>
+<p>Specify a title when using <strong>-subformat</strong> for a PDF/UA
+file.</p>
+</dd>
+</dl>
+<h1 id="drawing-on-pdfs">18. DRAWING ON PDFS</h1>
+<p><strong>cpdf in.pdf</strong> [&lt;range&gt;] [-draw-struct-tree]
+<strong>-draw &lt;draw operations&gt;</strong> [-underneath] <strong>-o
+out.pdf</strong></p>
+<p>Draw on a PDF. See cpdfmanual.pdf for a tutorial, and full
+information.</p>
+<dl>
+<dt><strong>-draw-struct-tree</strong></dt>
+<dd>
+<p>Produce structure information.</p>
+</dd>
+<dt><strong>-underneath</strong></dt>
+<dd>
+<p>Draw underneath instead of on top of any existing page content.</p>
+</dd>
+</dl>
+<p><strong>cpdf -text-width &lt;string&gt;</strong> [-font &lt;font&gt;]
+[-fontsize &lt;n&gt;]</p>
+<p>Return the width of a string of text in a one of the standard 14
+fonts. Used for calculations of text position (e.g right-alignment).</p>
+<dl>
+<dt><strong>-font</strong> &lt;font&gt;</dt>
+<dd>
+<p>Specify the font.</p>
+</dd>
+<dt><strong>-fontsize</strong> &lt;n&gt;</dt>
+<dd>
+<p>Specify the font size.</p>
+</dd>
+</dl>
+<p><strong>Building and showing paths</strong></p>
+<dl>
+<dt><strong>-rect</strong> “x y w h”</dt>
+<dd>
+<p>Draw rectangle.</p>
+</dd>
+<dt><strong>-to</strong> “x y”</dt>
+<dd>
+<p>Move to.</p>
+</dd>
+<dt><strong>-line</strong> “x y”</dt>
+<dd>
+<p>Add line to path.</p>
+</dd>
+<dt><strong>-bez</strong> “x1 y1 x2 y2 x3 y3”</dt>
+<dd>
+<p>Add Bezier curve to path.</p>
+</dd>
+<dt><strong>-bez23</strong> “x2 y2 x3 y3”</dt>
+<dd>
+<p>Add Bezier curve to path.</p>
+</dd>
+<dt><strong>-bez13</strong> “x1 y1 x3 y3”</dt>
+<dd>
+<p>Add Bezier curve to path.</p>
+</dd>
+<dt><strong>-circle</strong> “x y r”</dt>
+<dd>
+<p>Add circle to path.</p>
+</dd>
+<dt><strong>-stroke</strong></dt>
+<dd>
+<p>Stroke path.</p>
+</dd>
+<dt><strong>-fill</strong></dt>
+<dd>
+<p>Fill path.</p>
+</dd>
+<dt><strong>-filleo</strong></dt>
+<dd>
+<p>Fill path, even odd.</p>
+</dd>
+<dt><strong>-strokefill</strong></dt>
+<dd>
+<p>Stroke and fill path.</p>
+</dd>
+<dt><strong>-strokefilleo</strong></dt>
+<dd>
+<p>Stroke and fill path, even odd.</p>
+</dd>
+<dt><strong>-close</strong></dt>
+<dd>
+<p>Close path.</p>
+</dd>
+</dl>
+<p><strong>Clipping with paths</strong></p>
+<dl>
+<dt><strong>-clip</strong></dt>
+<dd>
+<p>Clip.</p>
+</dd>
+<dt><strong>-clipeo</strong></dt>
+<dd>
+<p>Clip, even odd.</p>
+</dd>
+</dl>
+<p><strong>Path parameters</strong></p>
+<dl>
+<dt><strong>-strokecol</strong> “g” | “r g b” | “c y m k” |
+&lt;namedcolour&gt;</dt>
+<dd>
+<p>Set stroke colour.</p>
+</dd>
+<dt><strong>-fillcol</strong> “g” | “r g b” | “c y m k” |
+&lt;namedcolour&gt;</dt>
+<dd>
+<p>Set fill colour.</p>
+</dd>
+<dt><strong>-thick</strong> &lt;n&gt;</dt>
+<dd>
+<p>Set stroke thickness.</p>
+</dd>
+<dt><strong>-cap</strong> &lt;butt | round | square&gt;</dt>
+<dd>
+<p>Set cap.</p>
+</dd>
+<dt><strong>-join</strong> &lt;miter | round | bevel&gt;</dt>
+<dd>
+<p>Set join.</p>
+</dd>
+<dt><strong>-miter</strong> &lt;n&gt;</dt>
+<dd>
+<p>Set miter limit.</p>
+</dd>
+<dt><strong>-dash</strong> &lt;pattern&gt;</dt>
+<dd>
+<p>Set dash pattern.</p>
+</dd>
+</dl>
+<p><strong>The graphics stack and matrices</strong></p>
+<dl>
+<dt><strong>-push</strong></dt>
+<dd>
+<p>Push graphics stack.</p>
+</dd>
+<dt><strong>-pop</strong></dt>
+<dd>
+<p>Pop graphics stack.</p>
+</dd>
+<dt><strong>-matrix</strong> “a b c d e f”</dt>
+<dd>
+<p>Append to graphics matrix.</p>
+</dd>
+<dt><strong>-mtrans</strong> “tx ty”</dt>
+<dd>
+<p>Translate the graphics matrix.</p>
+</dd>
+<dt><strong>-mrot</strong> “x y a”</dt>
+<dd>
+<p>Rotate the graphics matrix.</p>
+</dd>
+<dt><strong>-mscale</strong> “x y sx sy”</dt>
+<dd>
+<p>Scale the graphics matrix.</p>
+</dd>
+<dt><strong>-mshearx</strong> “x y a”</dt>
+<dd>
+<p>Shear the graphics matrix in X.</p>
+</dd>
+<dt><strong>-msheary</strong> “x y a”</dt>
+<dd>
+<p>Shear the graphics matrix in Y.</p>
+</dd>
+</dl>
+<p><strong>Re-use with XObjects</strong></p>
+<dl>
+<dt><strong>-xobj-bbox</strong> “x y w h”</dt>
+<dd>
+<p>Specify the bounding box for xobjects.</p>
+</dd>
+<dt><strong>-xobj</strong> &lt;name&gt;</dt>
+<dd>
+<p>Begin saving a sequence of graphics operators.</p>
+</dd>
+<dt><strong>-end-xobj</strong></dt>
+<dd>
+<p>End saving a sequence of graphics operators.</p>
+</dd>
+<dt><strong>-use</strong> &lt;name&gt;</dt>
+<dd>
+<p>Use a saved sequence of graphics operators.</p>
+</dd>
+</dl>
+<p><strong>Images</strong></p>
+<dl>
+<dt><strong>-draw-jpeg</strong> &lt;name&gt;=&lt;filename&gt;</dt>
+<dd>
+<p>Load a JPEG from file and name it.</p>
+</dd>
+<dt><strong>-draw-png</strong> &lt;name&gt;=&lt;filename&gt;</dt>
+<dd>
+<p>Load a PNG from file and name it.</p>
+</dd>
+<dt><strong>-draw-jpeg2000</strong> &lt;name&gt;=&lt;filename&gt;</dt>
+<dd>
+<p>Load a JPEG2000 from file and name it.</p>
+</dd>
+<dt><strong>-image</strong> &lt;name&gt;</dt>
+<dd>
+<p>Draw an image which has already been loaded.</p>
+</dd>
+</dl>
+<p><strong>Transparency</strong></p>
+<dl>
+<dt><strong>-fill-opacity</strong> &lt;n&gt;</dt>
+<dd>
+<p>Set opacity.</p>
+</dd>
+<dt><strong>-stroke-opacity</strong> &lt;n&gt;</dt>
+<dd>
+<p>Set stroke opacity.</p>
+</dd>
+</dl>
+<p><strong>Text</strong></p>
+<dl>
+<dt><strong>-bt</strong></dt>
+<dd>
+<p>Begin text.</p>
+</dd>
+<dt><strong>-et</strong></dt>
+<dd>
+<p>End text.</p>
+</dd>
+<dt><strong>-text</strong> &lt;string&gt;</dt>
+<dd>
+<p>Draw text.</p>
+</dd>
+<dt><strong>-stext</strong> &lt;string&gt;</dt>
+<dd>
+<p>Draw text with %specials.</p>
+</dd>
+<dt><strong>-para</strong> &lt;paragraph&gt;</dt>
+<dd>
+<p>Typeset a paragraph.</p>
+</dd>
+<dt><strong>-paras</strong> &lt;paragraph&gt;</dt>
+<dd>
+<p>Typeset multiple paragraphs.</p>
+</dd>
+<dt><strong>-indent</strong> &lt;n&gt;</dt>
+<dd>
+<p>Set paragraph indent.</p>
+</dd>
+<dt><strong>-leading</strong> &lt;n&gt;</dt>
+<dd>
+<p>Set leading.</p>
+</dd>
+<dt><strong>-charspace</strong> &lt;n&gt;</dt>
+<dd>
+<p>Set character spacing.</p>
+</dd>
+<dt><strong>-wordspace</strong> &lt;n&gt;</dt>
+<dd>
+<p>Set word space.</p>
+</dd>
+<dt><strong>-textscale</strong> &lt;n&gt;</dt>
+<dd>
+<p>Set text scale.</p>
+</dd>
+<dt><strong>-rendermode</strong> &lt;n&gt;</dt>
+<dd>
+<p>Set text rendering mode.</p>
+</dd>
+<dt><strong>-rise</strong> &lt;n&gt;</dt>
+<dd>
+<p>Set text rise.</p>
+</dd>
+<dt><strong>-nl</strong></dt>
+<dd>
+<p>New line.</p>
+</dd>
+</dl>
+<p><strong>The Next Page</strong></p>
+<dl>
+<dt><strong>-newpage</strong></dt>
+<dd>
+<p>Move to a fresh page.</p>
+</dd>
+</dl>
+<p><strong>Structure Information</strong></p>
+<dl>
+<dt><strong>-draw-struct-tree</strong></dt>
+<dd>
+<p>Add structure information. Must precede <strong>-draw</strong> on
+command line.</p>
+</dd>
+<dt><strong>-tag</strong> &lt;name&gt;</dt>
+<dd>
+<p>Begin marked content.</p>
+</dd>
+<dt><strong>-end-tag</strong></dt>
+<dd>
+<p>End marked content.</p>
+</dd>
+<dt><strong>-stag</strong> &lt;name&gt;</dt>
+<dd>
+<p>Begin structure tree branch.</p>
+</dd>
+<dt><strong>-end-stag</strong></dt>
+<dd>
+<p>End structure tree branch.</p>
+</dd>
+<dt><strong>-auto-tags</strong></dt>
+<dd>
+<p>Automatically tag paragraphs and images.</p>
+</dd>
+<dt><strong>-no-auto-tags</strong></dt>
+<dd>
+<p>Refrain from automatically tagging paragraphs and images.</p>
+</dd>
+<dt><strong>-artifact</strong></dt>
+<dd>
+<p>Begin manual artifact.</p>
+</dd>
+<dt><strong>-end-artifact</strong></dt>
+<dd>
+<p>End manual artifact.</p>
+</dd>
+<dt><strong>-no-auto-artifacts</strong></dt>
+<dd>
+<p>Prevent automatic addition of artifacts during post-processing.</p>
+</dd>
+<dt><strong>-namespace</strong> &lt;namespace&gt;</dt>
+<dd>
+<p>Set the namespace for future branches of the tree.</p>
+</dd>
+<dt><strong>-eltinfo</strong> &lt;elt=string&gt;</dt>
+<dd>
+<p>Set element information.</p>
+</dd>
+<dt><strong>-end-eltinfo</strong></dt>
+<dd>
+<p>Erase element information.</p>
+</dd>
+<dt><strong>-rolemap</strong> &lt;rolemap&gt;</dt>
+<dd>
+<p>Set role map.</p>
+</dd>
+</dl>
+<h1 id="accessible-pdfs-with-pdfua">19. ACCESSIBLE PDFS WITH PDF/UA</h1>
+<p><strong>cpdf -print-struct-tree in.pdf</strong></p>
+<p>Print a PDF’s structure tree to standard output for inspection.</p>
+<p><strong>cpdf -extract-struct-tree in.pdf -o out.json</strong></p>
+<p>Extract the whole structure tree in JSON format. See cpdfmanual.pdf
+for details.</p>
+<p><strong>cpdf -replace-struct-tree in.json in.pdf -o
+out.pdf</strong></p>
+<p>Replace a PDF’s structure tree with one from a JSON file.</p>
+<p><strong>cpdf -remove-struct-tree in.pdf -o out.pdf</strong></p>
+<p>Remove the structure tree from a file.</p>
+<p><strong>cpdf -mark-as-artifact in.pdf -o out.pdf</strong></p>
+<p>Mark all the content of the file as being an artifact.</p>
+<p><strong>cpdf -verify “PDF/UA-1(matterhorn)”</strong>
+<strong>in.pdf</strong> [-verify-single &lt;test&gt;] [-json]</p>
+<p>Verify conformance with PDF/UA-1.</p>
+<dl>
+<dt><strong>-json</strong></dt>
+<dd>
+<p>Output conformance failures in JSON rather than plain text
+format.</p>
+</dd>
+<dt><strong>-verify-single</strong> &lt;test&gt;</dt>
+<dd>
+<p>Verify just one test. See cpdfmanual.pdf for list of tests.</p>
+</dd>
+</dl>
+<p><strong>cpdf -mark-as [“PDF/UA-1” | “PDF/UA-2”] in.pdf -o
+out.pdf</strong></p>
+<p>Mark a PDF as conforming to PDF/UA-1 or PDF/UA-2</p>
+<p><strong>cpdf -remove-mark [“PDF/UA-1” | “PDF/UA-2”] in.pdf -o
+out.pdf</strong></p>
+<p>Remove conformance marker from a PDF.</p>
+<p><strong>cpdf -create-pdf-ua-&lt;1 | 2&gt; &lt;string&gt;</strong>
+[-create-pdf-pages &lt;n&gt;] [-create-pdf-papersize &lt;papersize&gt;]
+<strong>-o out.pdf</strong></p>
+<p>Create a new, blank, PDF/UA-1 or PDF/UA-2 file with the given
+title.</p>
+<dl>
+<dt><strong>-create-pdf-pages</strong> &lt;n&gt;</dt>
+<dd>
+<p>Give the number of pages.</p>
+</dd>
+<dt><strong>-create-pdf-papersize</strong> &lt;papersize&gt;</dt>
+<dd>
+<p>Give the paper size, e.g “a3landscape” or “200pt 600pt”</p>
+</dd>
+</dl>
+<h1 id="miscellaneous">20. MISCELLANEOUS</h1>
+<p><strong>cpdf -draft</strong> <strong>in.pdf</strong> [&lt;range&gt;]
+[-boxes] [-draft-remove-only &lt;n&gt;] <strong>-o out.pdf</strong></p>
+<p>Remove bit-mapped (photographic) images from a PDF.</p>
+<dl>
+<dt><strong>-boxes</strong></dt>
+<dd>
+<p>Replace each image with a crossed box to show where it was.</p>
+</dd>
+<dt><strong>-draft-remove-only</strong></dt>
+<dd>
+<p>Remove only one image, with the given name. The name can be obtained
+from, for example, <strong>-list-images-used</strong>.</p>
+</dd>
+</dl>
+<p><strong>cpdf -remove-all-text in.pdf</strong> [&lt;range&gt;]
+<strong>-o out.pdf</strong></p>
+<p>Remove all text from a PDF.</p>
+<p><strong>cpdf -blacktext in.pdf</strong> [&lt;range&gt;] <strong>-o
+out.pdf</strong></p>
+<p>Make all text black.</p>
+<p><strong>cpdf -blacklines in.pdf</strong> [&lt;range&gt;] <strong>-o
+out.pdf</strong></p>
+<p>Make all lines black.</p>
+<p><strong>cpdf -blackfills in.pdf</strong> [&lt;range&gt;] <strong>-o
+out.pdf</strong></p>
+<p>Make all fills black.</p>
+<p><strong>cpdf -thinlines &lt;min thickness&gt; in.pdf</strong>
+[&lt;range&gt;] <strong>-o out.pdf</strong></p>
+<p>Make each line a minimum thickness. A negative value will instead
+thin lines to the absolute of the value given. By processing twice, with
+a positive then negative figure, it is therefore possible to clamp
+thicknesses to a range or single value.</p>
+<p><strong>cpdf -clean in.pdf -o out.pdf</strong></p>
+<p>Deprecated. This work is now done by default upon writing any
+file.</p>
+<p><strong>cpdf -set-version &lt;version number&gt; in.pdf -o
+out.pdf</strong></p>
+<p>Set the version of a PDF. E.g for version 1.4, use
+<strong>-set-version 4</strong>. For PDF versions starting with 2, add
+ten to the number. E.g for PDF 2.0, use <strong>-set-version
+10</strong>.</p>
+<p><strong>cpdf -copy-id-from source.pdf in.pdf -o out.pdf</strong></p>
+<p>Copy the ID from one PDF to another.</p>
+<p><strong>cpdf -remove-id in.pdf -o out.pdf</strong></p>
+<p>Remove the ID from a PDF.</p>
+<p><strong>cpdf -list-spot-colors in.pdf</strong></p>
+<p>List the names of any separation colour spaces in a PDF.</p>
+<p><strong>cpdf -print-dict-entry</strong> <strong>&lt;key&gt;
+in.pdf</strong> [-json]</p>
+<p><strong>cpdf -remove-dict-entry &lt;key&gt;</strong>
+<strong>in.pdf</strong> [-dict-entry-search &lt;term&gt;] <strong>-o
+out.pdf</strong></p>
+<p><strong>cpdf -replace-dict-entry &lt;key&gt;
+-replace-dict-entry-value &lt;value&gt;</strong> <strong>in.pdf</strong>
+[-dict-entry-search &lt;term&gt;] <strong>-o out.pdf</strong></p>
+<p>Low level operations to edit PDF objects directly. See cpdfmanual.pdf
+for details.</p>
+<p><strong>cpdf -remove-clipping in.pdf</strong> [&lt;range&gt;]
+<strong>-o out.pdf</strong></p>
+<p>Remove any clipping paths from a PDF.</p>
+<p><strong>cpdf -obj[-json] &lt;object specification&gt;
+in.pdf</strong></p>
+<p><strong>cpdf -replace-obj &lt;object specification&gt;=&lt;object&gt;
+in.pdf -o out.pdf</strong></p>
+<p><strong>cpdf -remove-obj &lt;object number&gt; in.pdf -o
+out.pdf</strong></p>
+<p><strong>cpdf -extract-stream[-decompress] &lt;object
+specification&gt; in.pdf -o out.dat</strong></p>
+<p><strong>cpdf -replace-stream &lt;object specification&gt;
+-replace-stream-with &lt;filename&gt; in.pdf -o out.pdf</strong></p>
+<p>Low level operations to explore and edit PDF files object-by-object.
+See cpdfmanual.pdf for details.</p>
+<p><strong>cpdf -contains-javascript in.pdf</strong></p>
+<p>Prints true if the PDF contains JavaScript, false otherwise.</p>
+<p><strong>cpdf -remove-javascript in.pdf -o out.pdf</strong></p>
+<p>Remove JavaScript from a PDF.</p>
+<h1 id="environment">ENVIRONMENT</h1>
+<dl>
+<dt><strong>CPDF_SHOW_EXT</strong></dt>
+<dd>
+<p>Show command line of external commands as they are called if equal to
+“true”.</p>
+</dd>
+<dt><strong>CPDF_DEBUG</strong></dt>
+<dd>
+<p>Same as adding <strong>-debug</strong> to command line, if equal to
+“true”.</p>
+</dd>
+<dt><strong>CPDF_REPRODUCIBLE_DATES</strong></dt>
+<dd>
+<p>Expand data “now” to the same, false value each time, if equal to
+“true”.</p>
+</dd>
+<dt><strong>CAMLPDF_REPRODUCIBLE_IDS</strong></dt>
+<dd>
+<p>Produce the same file ID each time, if equal to “true”.</p>
+</dd>
+</dl>
+<h1 id="bugs">BUGS</h1>
+<p>See https://github.com/johnwhitington/cpdf-source/issues or email
+contact@coherentgraphics.co.uk</p>
+</body>
+</html>
