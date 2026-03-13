@@ -1,3 +1,5 @@
+<img width="400" height="163" alt="cpdf logo" src="https://github.com/user-attachments/assets/afc5a599-d342-4088-bd0f-d11b8ec74bf3" />
+
 Coherent PDF Command Line Tools Binaries
 ========================================
 
