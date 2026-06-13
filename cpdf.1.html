@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" lang="" xml:lang="">
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8" />
   <meta name="generator" content="pandoc" />
@@ -92,6 +92,7 @@
       color: #606060;
     }
     code {
+      white-space: pre-wrap;
       font-family: Menlo, Monaco, Consolas, 'Lucida Console', monospace;
       font-size: 85%;
       margin: 0;
@@ -155,7 +156,6 @@
     #TOC a:not(:hover) {
       text-decoration: none;
     }
-    code{white-space: pre-wrap;}
     span.smallcaps{font-variant: small-caps;}
     div.columns{display: flex; gap: min(4vw, 1.5em);}
     div.column{flex: auto; overflow-x: auto;}
@@ -176,7 +176,7 @@
 <header id="title-block-header">
 <h1 class="title">CPDF(1)</h1>
 <p class="author">Coherent Graphics Ltd</p>
-<p class="date">February 2026</p>
+<p class="date">May 2026</p>
 </header>
 <h1 id="name">NAME</h1>
 <p>cpdf - PDF command line tools.</p>
@@ -374,6 +374,20 @@ last resort.</p>
 <dd>
 <p>Do not attempt to reconstruct malformed files by any method, but exit
 with an error.</p>
+</dd>
+<dt><strong>-revisions</strong></dt>
+<dd>
+<p>Print the number of incremental-update revisions in the file.</p>
+</dd>
+<dt><strong>-revision</strong> &lt;n&gt;</dt>
+<dd>
+<p>Extract a revision from the file. Revision 1 is the latest, 2 the
+next back and so on. Must come after file name.</p>
+</dd>
+<dt><strong>-update</strong></dt>
+<dd>
+<p>Update a file incrementally. As in <strong>cpdf</strong>
+<strong>in.pdf</strong> … -update <strong>-o in.pdf</strong>.</p>
 </dd>
 </dl>
 <h1 id="merging-and-splitting">2. MERGING AND SPLITTING</h1>
@@ -890,7 +904,7 @@ information.</p>
 <h1 id="text-and-stamps">8. TEXT AND STAMPS</h1>
 <p><strong>cpdf [-stamp-on | -stamp-under] stamp.pdf</strong>
 <strong>in.pdf</strong> [&lt;range&gt;] [-scale-stamp-to-fit]
-[&lt;positioning command&gt;] [-relative-to-cropbox]
+[&lt;positioning command&gt;] [-relative-to-[crop|trim|art|bleed]box]
 [-process-struct-trees] [-fast] <strong>-o out.pdf</strong></p>
 <p>Stamp a one-page PDF over or under each page in the given range. The
 positioning commands described later in this chapter may be used to
@@ -900,10 +914,10 @@ choose where to stamp it (default, bottom left of media box).</p>
 <dd>
 <p>Scale the stamp to fit the page before applying it.</p>
 </dd>
-<dt><strong>-relative-to-cropbox</strong></dt>
+<dt><strong>-relative-to-[crop|trim|art|bleed]box</strong></dt>
 <dd>
-<p>Take the positioning command relative to the crop box rather than the
-media box.</p>
+<p>Take the positioning command relative to the given box rather than
+the media box.</p>
 </dd>
 <dt><strong>-process-struct-trees</strong></dt>
 <dd>
@@ -940,11 +954,12 @@ combining.</p>
 size&gt; &lt;y size&gt;”]</strong> [-font &lt;fontname&gt;] [-font-size
 &lt;n&gt;] [-load-ttf &lt;name&gt;=&lt;filename&gt;] [-embed-std14
 &lt;path&gt;] [-color &lt;color&gt;] [-line-spacing &lt;n&gt;]
-[-outline] [-linewidth &lt;n&gt;] [-underneath] [-relative-to-cropbox]
-[-prerotate] [-no-warn-rotate] [-bates &lt;n&gt;] [-bates-at-range
-&lt;n&gt;] [-bates-pad-to &lt;n&gt;] [-opacity &lt;n&gt;] [-midline]
-[-topline] [-fast] [-process-struct-trees] <strong>in.pdf</strong>
-[&lt;range&gt;] <strong>-o out.pdf</strong></p>
+[-outline] [-linewidth &lt;n&gt;] [-underneath]
+[-relative-to-[crop|trim|art|bleed]box] [-prerotate] [-no-warn-rotate]
+[-bates &lt;n&gt;] [-bates-at-range &lt;n&gt;] [-bates-pad-to &lt;n&gt;]
+[-opacity &lt;n&gt;] [-midline] [-topline] [-text-[90|180|270]] [-fast]
+[-process-struct-trees] <strong>in.pdf</strong> [&lt;range&gt;]
+<strong>-o out.pdf</strong></p>
 <p>Add text to a PDF. Various special codes for page numbers or time and
 date may be used. For example:</p>
 <pre><code>%Page          Page number in arabic notation (1, 2, 3. . . )
@@ -1032,9 +1047,9 @@ numbers from 0-1. E.g <strong>-color “0.5 0.4 0.5”</strong>.</p>
 <dd>
 <p>Put the text underneath the page instead of on top of the page.</p>
 </dd>
-<dt><strong>-relative-to-cropbox</strong></dt>
+<dt><strong>-relative-to-[crop|trim|art|bleed]box</strong></dt>
 <dd>
-<p>Positions are relative to the crop box, rather than the media
+<p>Positions are relative to the given box, rather than the media
 box.</p>
 </dd>
 <dt><strong>-prerotate</strong></dt>
@@ -1163,6 +1178,18 @@ center right of the page.</p>
 <dd>
 <p>Position text centered on the page.</p>
 </dd>
+<dt><strong>-text-90</strong></dt>
+<dd>
+<p>Rotate text 90 degrees.</p>
+</dd>
+<dt><strong>-text-180</strong></dt>
+<dd>
+<p>Rotate text 180 degrees.</p>
+</dd>
+<dt><strong>-text-270</strong></dt>
+<dd>
+<p>Rotate text 270 degrees.</p>
+</dd>
 <dt><strong>-justify-left</strong></dt>
 <dd>
 <p>Set left justification for multi-line text. Default depends upon
@@ -1177,6 +1204,10 @@ position.</p>
 <dd>
 <p>Set center justification for multi-line text. Default depends upon
 position.</p>
+</dd>
+<dt><strong>-url-border</strong></dt>
+<dd>
+<p>Show the border for %URL text specials.</p>
 </dd>
 </dl>
 <p><strong>cpdf -remove-text in.pdf</strong> [&lt;range&gt;] <strong>-o
@@ -1438,6 +1469,8 @@ points.</p>
 </dl>
 <p><strong>cpdf -pages in.pdf</strong></p>
 <p>Print the number of pages in the file.</p>
+<p><strong>cpdf -sig-info [-json] in.pdf</strong></p>
+<p>Print information about digital signatures.</p>
 <p><strong>cpdf -set-title &lt;string&gt;</strong>
 <strong>in.pdf</strong> [-also-set-xmp] [-just-set-xmp] <strong>-o
 out.pdf</strong></p>
@@ -1578,12 +1611,21 @@ override this, we can use <strong>-label-startval</strong>.</p>
 range specified is disjoint, e.g “1-9, 30-40” or “odd”.</p>
 </dd>
 </dl>
+<p><strong>cpdf -add-page-labels-json in.json -o out.pdf</strong></p>
+<p>Add page labels from a file like that produced by
+<strong>-print-page-labels-json -include-data</strong>.</p>
 <p><strong>cpdf -remove-page-labels in.pdf -o out.pdf</strong></p>
 <p>Remove the page labels.</p>
 <p><strong>cpdf -print-page-labels[-json] in.pdf</strong></p>
 <p>Print the page labels in plain text
 (<strong>-print-page-labels</strong>) or JSON
 (<strong>-print-page-labels-json</strong>) format.</p>
+<dl>
+<dt><strong>-include-data</strong></dt>
+<dd>
+<p>In JSON format, include the attachment data as well as metadata.</p>
+</dd>
+</dl>
 <p><strong>cpdf -composition[-json] in.pdf</strong></p>
 <p>Print the composition of a PDF, showing how much space is taken by
 images, fonts etc.</p>
@@ -1616,6 +1658,10 @@ page.</p>
 <p>Supply the so-called Relationship for this attachment.</p>
 </dd>
 </dl>
+<p><strong>cpdf -add-attached-files in.json in.pdf -o
+out.pdf</strong></p>
+<p>Add attached files from JSON produced by
+<strong>-list-attached-files</strong> or otherwise.</p>
 <p><strong>cpdf -list-attached-files</strong> <strong>in.pdf</strong>
 [-json] [-include-data]</p>
 <p>List attached files.</p>
@@ -1957,6 +2003,12 @@ easily editable.</p>
 <p><strong>cpdf -ocg-list in.pdf</strong></p>
 <p>List the optional content groups in the PDF, one per line, to
 standard output.</p>
+<p><strong>cpdf -ocg-list-json in.pdf</strong></p>
+<p>List the optional content groups in JSON format, suitable for
+modificationn and roundtripping.</p>
+<p><strong>cpdf -ocg-replace in.json in.pdf -o out.pdf</strong></p>
+<p>Replace the optional content groups in a PDF with the (possibly
+modified) output of <strong>-ocg-list-json</strong>.</p>
 <p><strong>cpdf -ocg-rename in.pdf -ocg-rename-from &lt;a&gt;
 -ocg-rename-to &lt;b&gt; -o out.pdf</strong></p>
 <p>Rename an optional content group given the old and new names.</p>
@@ -2477,6 +2529,9 @@ out.pdf</strong></p>
 <p><strong>cpdf -blackfills in.pdf</strong> [&lt;range&gt;] <strong>-o
 out.pdf</strong></p>
 <p>Make all fills black.</p>
+<p><strong>cpdf -reveal-text in.pdf</strong> [&lt;range&gt;] <strong>-o
+out.pdf</strong></p>
+<p>Make all text filled.</p>
 <p><strong>cpdf -thinlines &lt;min thickness&gt; in.pdf</strong>
 [&lt;range&gt;] <strong>-o out.pdf</strong></p>
 <p>Make each line a minimum thickness. A negative value will instead
@@ -2527,6 +2582,46 @@ See cpdfmanual.pdf for details.</p>
 <p>Prints true if the PDF contains JavaScript, false otherwise.</p>
 <p><strong>cpdf -remove-javascript in.pdf -o out.pdf</strong></p>
 <p>Remove JavaScript from a PDF.</p>
+<p><strong>cpdf -debug in.pdf …</strong></p>
+<p>Show debug information.</p>
+<p><strong>cpdf -debug-crypt in.pdf …</strong></p>
+<p>Show extra debug information to do with encryption.</p>
+<p><strong>cpdf -debug-malformed in.pdf …</strong></p>
+<p>Treat file as if malformed.</p>
+<p><strong>cpdf -debug-stderr-to-stdout in.pdf …</strong></p>
+<p>Intermingle <strong>stderr</strong> and <strong>stdout</strong>
+output on <strong>stdout</strong>.</p>
+<p><strong>cpdf -debug-readable-ops in.pdf …</strong></p>
+<p>Use newlines instead of spaces in page stream content.</p>
+<p><strong>cpdf -stay-on-error in.pdf …</strong></p>
+<p>Do not call exit() after an error.</p>
+<p><strong>cpdf -remove-stream-content in.pdf -o out.pdf</strong></p>
+<p>Remove stream content when writing.</p>
+<p><strong>cpdf -show-bboxes in.pdf</strong> [-light] <strong>-o
+out.pdf</strong></p>
+<p>Show bounding boxes of objects on page.</p>
+<p><strong>cpdf -show-bboxes-shape &lt;boxspec&gt;</strong> [-light]
+<strong>-o out.pdf</strong></p>
+<p>Show bounding boxes of objects on page which lie within a given
+rectangle “minx miny width height”.</p>
+<p><strong>cpdf -page-content in.pdf</strong> [&lt;range&gt;]
+[-pc-no-graphics] [-pc-no-text] [-pc-no-images] <strong>-o
+out.json</strong></p>
+<p>Output JSON representation of content of pages.</p>
+<dl>
+<dt><strong>-pc-no-graphics</strong></dt>
+<dd>
+<p>Suppress output of paths and shadings.</p>
+</dd>
+<dt><strong>-pc-no-text</strong></dt>
+<dd>
+<p>Suppress output of text objects.</p>
+</dd>
+<dt><strong>-pc-no-images</strong></dt>
+<dd>
+<p>Suppress output of images.</p>
+</dd>
+</dl>
 <h1 id="environment">ENVIRONMENT</h1>
 <dl>
 <dt><strong>CPDF_SHOW_EXT</strong></dt>

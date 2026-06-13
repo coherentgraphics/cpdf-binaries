@@ -1,3 +1,37 @@
+2.9.1 (May 2026)
+
+New features:
+
+o Print number of revisions in a PDF with -revisions
+o Choose which revision to load with -revision
+o Update a PDF by appending with -update
+o Show digital signature information with -sig-info
+o Add attached files from JSON data
+o Add page labels from JSON data
+o List OCGs in JSON form with -ocg-list-json
+o Edit & round-trip OCGs with -ocg-replace
+o Remove stream content for debug
+* Show bounding boxes of page content with -show-bboxes
+o Suppress adjacent identical errors
+* Export basic page content as JSON
+
+Extended features:
+
+o Operations -relative-to-[bleed|art|trim]box as well as crop
+o Document all debug functions in -summary
+o Rotate text for -add-text using -text-[90|180|270].
+o Optionally add a border to URLs in -add-text
+o %URL now works with diagonal text
+o Identify custom encodings in -list-fonts
+
+Fixes:
+
+o -midline and -topline now work properly for custom fonts
+o -summary goes to stdout
+o Correct parent links for non-dests in -set-annotations
+
+* = Supported by a grant from NLnet
+
 2.9 (March 2026)
 
 New features:
