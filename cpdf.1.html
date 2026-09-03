@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc" />
+  <meta name="generator" content="pandoc 3.10" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Coherent Graphics Ltd" />
   <title>CPDF(1)</title>
@@ -157,8 +157,12 @@
       text-decoration: none;
     }
     span.smallcaps{font-variant: small-caps;}
-    div.columns{display: flex; gap: min(4vw, 1.5em);}
-    div.column{flex: auto; overflow-x: auto;}
+    div.columns{display: flex; gap: 1.5em;}
+    div.column{flex: auto;}
+    @media screen {
+    div.columns{gap: min(4vw, 1.5em);}
+    div.column{overflow-x: auto;}
+    }
     div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
     /* The extra [class] is a hack that increases specificity enough to
        override a similar rule in reveal.js */
@@ -176,7 +180,7 @@
 <header id="title-block-header">
 <h1 class="title">CPDF(1)</h1>
 <p class="author">Coherent Graphics Ltd</p>
-<p class="date">May 2026</p>
+<p class="date">August 2026</p>
 </header>
 <h1 id="name">NAME</h1>
 <p>cpdf - PDF command line tools.</p>
@@ -1249,17 +1253,6 @@ pad.pdf] <strong>-o out.pdf</strong></dt>
 <p>Add as many blank pages as are required before or after the original
 pages to make the file’s length a multiple of the given number of
 pages</p>
-<p><strong>cpdf -redact</strong> <strong>in.pdf</strong> [&lt;range&gt;]
-[-process-struct-trees] <strong>-o out.pdf</strong></p>
-<p>Remove the content of the pages in the given range entirely,
-including annotations and any resources.</p>
-<dl>
-<dt><strong>-process-struct-trees</strong></dt>
-<dd>
-<p>Process the document’s structure tree to remove any parts which are
-marked as relating to the now-redacted pages.</p>
-</dd>
-</dl>
 <p><strong>cpdf [-impose &lt;pagesize&gt; | impose-xy “&lt;x&gt;
 &lt;y&gt;”]</strong> <strong>in.pdf</strong> [-impose-columns]
 [-impose-rtl] [-impose-btt] [-impose-margin &lt;n&gt;] [-impose-spacing
@@ -1658,7 +1651,7 @@ page.</p>
 <p>Supply the so-called Relationship for this attachment.</p>
 </dd>
 </dl>
-<p><strong>cpdf -add-attached-files in.json in.pdf -o
+<p><strong>cpdf -attach-files-json in.json in.pdf -o
 out.pdf</strong></p>
 <p>Add attached files from JSON produced by
 <strong>-list-attached-files</strong> or otherwise.</p>
@@ -1712,7 +1705,7 @@ as do not reach a minimum resolution.</p>
 </dd>
 </dl>
 <p><strong>cpdf -extract-images in.pdf</strong> [&lt;range&gt;] [-im
-&lt;path&gt;] [-p2p &lt;path&gt;] [-dedup | -dedup-perpage] [-raw]
+&lt;path&gt;] [-p2p &lt;path&gt;] [-dedup | -dedup-per-page] [-raw]
 [-inline] [-merge-masks] <strong>-o &lt;path&gt;</strong></p>
 <p>Extract images to a given path e.g “output/%%%”, which would create
 output/001.jpg, output/002.png and so on. JPEG, JPEG2000 and lossless
@@ -1856,7 +1849,7 @@ no dpi threshold).</p>
 </dd>
 </dl>
 <p><strong>cpdf -rasterize in.pdf</strong> [&lt;range&gt;] [-gs
-&lt;path&gt;] [-rasterize[-gray | -1bpp | -jpeg | -jpeggray]]
+&lt;path&gt;] [-rasterize[-gray | -1bpp | -jpeg | -jpeg-gray]]
 [-rasterize-res &lt;n&gt;] [-rasterize-jpeg-quality &lt;n&gt;]
 [-rasterize-no-antialias | -rasterize-downsample] [-rasterize-annots]
 [-rasterize-alpha] <strong>-o out.pdf</strong></p>
@@ -2502,7 +2495,78 @@ title.</p>
 <p>Give the paper size, e.g “a3landscape” or “200pt 600pt”</p>
 </dd>
 </dl>
-<h1 id="miscellaneous">20. MISCELLANEOUS</h1>
+<h1 id="redaction">20. REDACTION</h1>
+<p><strong>cpdf -redact</strong> <strong>in.pdf</strong> [&lt;range&gt;]
+[-process-struct-trees] <strong>-o out.pdf</strong></p>
+<p>Remove the content of the pages in the given range entirely,
+including annotations and any resources.</p>
+<dl>
+<dt><strong>-process-struct-trees</strong></dt>
+<dd>
+<p>Process the document’s structure tree to remove any parts which are
+marked as relating to the now-redacted pages.</p>
+</dd>
+</dl>
+<p><strong>cpdf -redact-shape</strong> &lt;rectangle&gt; [redaction
+options] <strong>in.pdf</strong> [&lt;range&gt;] <strong>-o
+out.pdf</strong></p>
+<p>Remove content in the given rectangle. See options below.</p>
+<p><strong>cpdf -redact-apply</strong> [redaction options]
+<strong>in.pdf</strong> [&lt;range&gt;] <strong>-o out.pdf</strong></p>
+<p>Apply redaction annotations. See options below.</p>
+<p><strong>cpdf -redact-apply-type</strong> &lt;annotation type&gt;
+[redaction options] <strong>in.pdf</strong> [&lt;range&gt;] <strong>-o
+out.pdf</strong></p>
+<p>Apply annotations as if they were redaction annotations. See options
+below.</p>
+<p><strong>cpdf -annotate</strong> &lt;rectangle&gt;
+<strong>in.pdf</strong> [&lt;range&gt;] <strong>-o out.pdf</strong></p>
+<p>Create a redaction annotation.</p>
+<dl>
+<dt><strong>-color</strong> &lt;color&gt;</dt>
+<dd>
+<p>Set the fill color for the redaction appearance (default black).</p>
+</dd>
+<dt><strong>-outline</strong></dt>
+<dd>
+<p>Make the redaction appearance outline-only.</p>
+</dd>
+<dt><strong>-redact-no-show</strong></dt>
+<dd>
+<p>Don’t show any redaction appearance.</p>
+</dd>
+<dt><strong>-redact-invert</strong></dt>
+<dd>
+<p>Invert the redaction, leaving everything which would otherwise be
+redacted and removing everything which would otherwise be kept.</p>
+</dd>
+<dt><strong>-redact-text</strong> [remove | leave],[touches |
+encloses]</dt>
+<dd>
+<p>Default “remove,touches”.</p>
+</dd>
+<dt><strong>-redact-images</strong> [remove | chop | leave],[touches |
+encloses]</dt>
+<dd>
+<p>Set image redaction specification. Default “leave”.</p>
+</dd>
+<dt><strong>-redact-inline-images</strong> [remove | leave],[touches |
+encloses]</dt>
+<dd>
+<p>Set inline image redaction specification. Default “leave”.</p>
+</dd>
+<dt><strong>-redact-vectors</strong> [remove | leave],[touches |
+encloses]</dt>
+<dd>
+<p>Set vectors redaction specification. Default “leave”.</p>
+</dd>
+<dt><strong>-redact-annotations</strong> [remove | leave],[touches |
+encloses]</dt>
+<dd>
+<p>Set annotation redaction specification. Default “leave”.</p>
+</dd>
+</dl>
+<h1 id="miscellaneous">21. MISCELLANEOUS</h1>
 <p><strong>cpdf -draft</strong> <strong>in.pdf</strong> [&lt;range&gt;]
 [-boxes] [-draft-remove-only &lt;n&gt;] <strong>-o out.pdf</strong></p>
 <p>Remove bit-mapped (photographic) images from a PDF.</p>
