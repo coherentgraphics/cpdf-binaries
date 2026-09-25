@@ -3,9 +3,6 @@
 Coherent PDF Command Line Tools Binaries
 ========================================
 
-**Download the "master" zip from https://github.com/coherentgraphics/cpdf-binaries/archive/master.zip. Do not download
-a versioned tag.**
-
 PDF Command Line Tools binaries for Linux, Mac, Windows.
 
 Cpdf is distributed under the AGPL - see LICENSE.md. If you are unable to abide
@@ -32,9 +29,9 @@ Cpdf may be available in your package manager:
 | Linux NixOS         | `nixshell -p OCamlPackages.cpdf`
 | Linux Alpine        | `apk add cpdf`
 
-Keep up to date by joining the very low volume cpdf-announce mailing list:
+An unofficial third-party Android build of Cpdf can be found here:
 
-https://groups.google.com/g/cpdf-announce/
+https://github.com/defencedog/arm64-Android-Termux-Builds/tree/main/cpdf
 
 Functionality
 ---
@@ -93,28 +90,12 @@ the first time, go to System Preferences --> Security & Privacy and click
 [https://www.coherentpdf.com/mac.html](https://www.coherentpdf.com/mac.html)
 
 
-C/C++/Python/.NET/Java API
+Keep up to date
 ---
 
-An API version of these tools is available:
+By joining the very low volume cpdf-announce mailing list:
 
-C/C++ source: [https://github.com/johnwhitington/cpdflib-source](https://github.com/johnwhitington/cpdflib-source)
-
-C/C++ binaries: [https://github.com/coherentgraphics/cpdflib-binary](https://github.com/coherentgraphics/cpdflib-binary)
-
-Python: [https://github.com/coherentgraphics/python-libcpdf](https://github.com/coherentgraphics/python-libcpdf)
-
-Java: [https://github.com/coherentgraphics/jcpdf](https://github.com/coherentgraphics/jcpdf)
-
-.NET: [https://github.com/coherentgraphics/dotnet-libcpdf](https://github.com/coherentgraphics/dotnet-libcpdf)
-
-
-Coherentpdf.js
----
-
-A JavaScript implementation for node and the browser is available:
-
-[https://github.com/coherentgraphics/coherentpdf.js](https://github.com/coherentgraphics/coherentpdf.js)
+https://groups.google.com/g/cpdf-announce/
 
 
 Support
