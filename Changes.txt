@@ -1,3 +1,27 @@
+2.9.3 (October 2026)
+
+New features
+
+* Remove search index with -remove-search-index
+* Add -annot-type to -list-annotations-json to filter
+* Remove all optional content with -ocg-remove
+* Remove marked content with -remove-marked-content
+* Optionally apply appearance of a redaction annotation
+* Remove AcroForm with -remove-acroform
+* Remove bookmarks and links to redacted content
+* Flatten annotations with -flatten-annotations
+
+Extended features:
+
+* Erase or filter text sections post-redaction
+* Add /NM, /M and /QuadPoints to redaction annotations
+* More finely controlled redaction with 'covers' specification
+* Create and style overlay text for redaction annotations
+* Text styling (e.g colours) works for -typeset, -toc etc.
+* Set margin for -typeset with -margin
+
+* = Supported by a grant from NLnet
+
 2.9.2 (September 2026)
 
 New features:

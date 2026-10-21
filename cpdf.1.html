@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="pandoc 3.10" />
+  <meta name="generator" content="pandoc 3.12.1" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes" />
   <meta name="author" content="Coherent Graphics Ltd" />
   <title>CPDF(1)</title>
@@ -12,7 +12,10 @@
     */
     html {
       color: #1a1a1a;
+      color: light-dark(#1a1a1a, #fdfdfd);
       background-color: #fdfdfd;
+      background-color: light-dark(#fdfdfd, #1a1a1a);
+      color-scheme: light dark;
     }
     body {
       margin: 0 auto;
@@ -37,12 +40,16 @@
     }
     @media print {
       html {
-        background-color: white;
+        color-scheme: light only;
       }
-      body {
+      html, body, pre, code {
         background-color: transparent;
+      }
+      body, a, a:visited, blockquote {
         color: black;
-        font-size: 12pt;
+      }
+      pre, code {
+        padding: 0;
       }
       p, h2, h3 {
         orphans: 3;
@@ -55,11 +62,8 @@
     p {
       margin: 1em 0;
     }
-    a {
-      color: #1a1a1a;
-    }
-    a:visited {
-      color: #1a1a1a;
+    a, a:visited {
+      color: inherit;
     }
     img {
       max-width: 100%;
@@ -88,8 +92,11 @@
     blockquote {
       margin: 1em 0 1em 1.7em;
       padding-left: 1em;
-      border-left: 2px solid #e6e6e6;
+      border-left: 2px solid;
+      border-color: #e6e6e6;
+      border-color: light-dark(#e6e6e6, #4c4c4c);
       color: #606060;
+      color: light-dark(#606060, #b6b6b6);
     }
     code {
       white-space: pre-wrap;
@@ -113,7 +120,7 @@
     }
     hr {
       border: none;
-      border-top: 1px solid #1a1a1a;
+      border-top: 1px solid currentColor;
       height: 1px;
       margin: 1em 0;
     }
@@ -130,11 +137,11 @@
     }
     tbody {
       margin-top: 0.5em;
-      border-top: 1px solid #1a1a1a;
-      border-bottom: 1px solid #1a1a1a;
+      border-top: 1px solid currentColor;
+      border-bottom: 1px solid currentColor;
     }
     th {
-      border-top: 1px solid #1a1a1a;
+      border-top: 1px solid currentColor;
       padding: 0.25em 0.5em 0.25em 0.5em;
     }
     td {
@@ -173,14 +180,13 @@
       margin: 0 0.8em 0.2em -1.6em;
       vertical-align: middle;
     }
-    .display.math{display: block; text-align: center; margin: 0.5rem auto;}
   </style>
 </head>
 <body>
 <header id="title-block-header">
 <h1 class="title">CPDF(1)</h1>
 <p class="author">Coherent Graphics Ltd</p>
-<p class="date">August 2026</p>
+<p class="date">October 2026</p>
 </header>
 <h1 id="name">NAME</h1>
 <p>cpdf - PDF command line tools.</p>
@@ -2038,13 +2044,17 @@ out.pdf</strong></p>
 <dd>
 <p>Give the paper size.</p>
 </dd>
+<dt><strong>-margin</strong> &lt;n&gt;</dt>
+<dd>
+<p>Set the margin.</p>
+</dd>
 <dt><strong>-font</strong> &lt;font&gt;</dt>
 <dd>
-<p>The font (default Times-Roman)</p>
+<p>The font (default Times-Roman).</p>
 </dd>
 <dt><strong>-font-size</strong> &lt;n&gt;</dt>
 <dd>
-<p>The font size (default 12pt)</p>
+<p>The font size (default 12pt).</p>
 </dd>
 <dt><strong>-subformat</strong> &lt;subformat&gt;</dt>
 <dd>
@@ -2497,75 +2507,190 @@ title.</p>
 </dl>
 <h1 id="redaction">20. REDACTION</h1>
 <p><strong>cpdf -redact</strong> <strong>in.pdf</strong> [&lt;range&gt;]
-[-process-struct-trees] <strong>-o out.pdf</strong></p>
+[-redact-structure remove,all] [-redact-links remove,page]
+[-redact-bookmarks remove,page] <strong>-o out.pdf</strong></p>
 <p>Remove the content of the pages in the given range entirely,
 including annotations and any resources.</p>
 <dl>
-<dt><strong>-process-struct-trees</strong></dt>
+<dt><strong>-redact-structure remove,all</strong></dt>
 <dd>
 <p>Process the document’s structure tree to remove any parts which are
 marked as relating to the now-redacted pages.</p>
 </dd>
+<dt><strong>-redact-links remove,page</strong></dt>
+<dd>
+<p>Remove links pointing to this page.</p>
+</dd>
+<dt><strong>-redact-bookmarks remove,page</strong></dt>
+<dd>
+<p>Remove bookmarks pointing to this page.</p>
+</dd>
 </dl>
-<p><strong>cpdf -redact-shape</strong> &lt;rectangle&gt; [redaction
+<p><strong>cpdf -redact-shape</strong> &lt;rectangle&gt; [application
 options] <strong>in.pdf</strong> [&lt;range&gt;] <strong>-o
 out.pdf</strong></p>
 <p>Remove content in the given rectangle. See options below.</p>
-<p><strong>cpdf -redact-apply</strong> [redaction options]
+<p><strong>cpdf -redact-apply</strong> [application options]
 <strong>in.pdf</strong> [&lt;range&gt;] <strong>-o out.pdf</strong></p>
 <p>Apply redaction annotations. See options below.</p>
 <p><strong>cpdf -redact-apply-type</strong> &lt;annotation type&gt;
-[redaction options] <strong>in.pdf</strong> [&lt;range&gt;] <strong>-o
+[application options] <strong>in.pdf</strong> [&lt;range&gt;] <strong>-o
 out.pdf</strong></p>
 <p>Apply annotations as if they were redaction annotations. See options
 below.</p>
-<p><strong>cpdf -annotate</strong> &lt;rectangle&gt;
-<strong>in.pdf</strong> [&lt;range&gt;] <strong>-o out.pdf</strong></p>
-<p>Create a redaction annotation.</p>
 <dl>
 <dt><strong>-color</strong> &lt;color&gt;</dt>
 <dd>
-<p>Set the fill color for the redaction appearance (default black).</p>
+<p>Set the fill color for the redaction (default black).</p>
+</dd>
+<dt><strong>-opacity</strong> &lt;n&gt;</dt>
+<dd>
+<p>Set redaction opacity.</p>
+</dd>
+<dt><strong>-linewidth</strong> &lt;n&gt;</dt>
+<dd>
+<p>Set line width for redaction outline.</p>
+</dd>
+<dt><strong>-underneath</strong></dt>
+<dd>
+<p>Apply the redaction underneath rather than on top of the page.</p>
 </dd>
 <dt><strong>-outline</strong></dt>
 <dd>
 <p>Make the redaction appearance outline-only.</p>
 </dd>
+<dt><strong>-jbig2dec</strong> &lt;path&gt;</dt>
+<dd>
+<p>Supply path to JBIG2 decoder. Only required when chopping images.</p>
+</dd>
+<dt><strong>-jbig2enc</strong> &lt;path&gt;</dt>
+<dd>
+<p>Supply path to JBIG2 encoder. Only required when chopping images.</p>
+</dd>
+<dt><strong>-magick</strong> &lt;path&gt;</dt>
+<dd>
+<p>Supply path to Imagemagick. Only required when chopping images.</p>
+</dd>
 <dt><strong>-redact-no-show</strong></dt>
 <dd>
-<p>Don’t show any redaction appearance.</p>
+<p>Don’t show the redaction shape at all, just redact.</p>
+</dd>
+<dt><strong>-redact-text</strong> [remove|leave],[touches|encloses]</dt>
+<dd>
+<p>Default “remove,touches”.</p>
+</dd>
+<dt><strong>-redact-images</strong>
+[remove|chop|leave],[touches|encloses|covers&lt;n&gt;]</dt>
+<dd>
+<p>Set image redaction specification. Default “leave”.</p>
+</dd>
+<dt><strong>-redact-inline-images</strong>
+[remove|leave],[touches|encloses|covers&lt;n&gt;]</dt>
+<dd>
+<p>Set inline image redaction specification. Default “leave”.</p>
+</dd>
+<dt><strong>-redact-vectors</strong>
+[remove|leave],[touches|encloses|covers&lt;n&gt;]</dt>
+<dd>
+<p>Set vectors redaction specification. Default “leave”.</p>
+</dd>
+<dt><strong>-redact-annotations</strong>
+[remove|leave],[touches|encloses|covers&lt;n&gt;]</dt>
+<dd>
+<p>Set annotation redaction specification. Default “leave”.</p>
+</dd>
+<dt><strong>-redact-links</strong> [remove|leave],[page|touches]</dt>
+<dd>
+<p>Set link redaction specification. Default “leave”.</p>
+</dd>
+<dt><strong>-redact-bookmarks</strong>
+[remove|leave],[page|touches]</dt>
+<dd>
+<p>Set bookmark redaction specification. Default “leave”.</p>
+</dd>
+<dt><strong>-redact-structure</strong>
+[remove|leave],[all|innermost|containing]</dt>
+<dd>
+<p>Set structure redaction specification. Default “leave”.</p>
+</dd>
+<dt><strong>-redact-apply-appearance</strong></dt>
+<dd>
+<p>Use the redaction annotation’s built-in appearance rather than
+defining it on the command line.</p>
 </dd>
 <dt><strong>-redact-invert</strong></dt>
 <dd>
 <p>Invert the redaction, leaving everything which would otherwise be
 redacted and removing everything which would otherwise be kept.</p>
 </dd>
-<dt><strong>-redact-text</strong> [remove | leave],[touches |
-encloses]</dt>
+</dl>
+<p><strong>cpdf -annotate</strong> &lt;rectangle&gt;
+<strong>in.pdf</strong> [&lt;range&gt;] [annotation options] <strong>-o
+out.pdf</strong></p>
+<p>Create a redaction annotation.</p>
+<dl>
+<dt><strong>-redact-color</strong> &lt;color&gt;</dt>
 <dd>
-<p>Default “remove,touches”.</p>
+<p>Redaction annotation color.</p>
 </dd>
-<dt><strong>-redact-images</strong> [remove | chop | leave],[touches |
-encloses]</dt>
+<dt><strong>-redact-outline-color</strong> &lt;color&gt;</dt>
 <dd>
-<p>Set image redaction specification. Default “leave”.</p>
+<p>Redaction annotation outline color.</p>
 </dd>
-<dt><strong>-redact-inline-images</strong> [remove | leave],[touches |
-encloses]</dt>
+<dt><strong>-redact-opacity</strong> &lt;n&gt;</dt>
 <dd>
-<p>Set inline image redaction specification. Default “leave”.</p>
+<p>Redaction fill and outline opacity.</p>
 </dd>
-<dt><strong>-redact-vectors</strong> [remove | leave],[touches |
-encloses]</dt>
+<dt><strong>-redact-overlay</strong> &lt;text&gt;</dt>
 <dd>
-<p>Set vectors redaction specification. Default “leave”.</p>
+<p>Redaction annotation overlay text.</p>
 </dd>
-<dt><strong>-redact-annotations</strong> [remove | leave],[touches |
-encloses]</dt>
+<dt><strong>-redact-repeat</strong></dt>
 <dd>
-<p>Set annotation redaction specification. Default “leave”.</p>
+<p>Repeat the overlay text to fill the space, interspersed with
+spaces.</p>
+</dd>
+<dt><strong>-redact-auto-size</strong></dt>
+<dd>
+<p>Auto-size annotation overlay text. If <strong>-redact-repeat</strong>
+also set, intersperse with newlines not spaces.</p>
+</dd>
+<dt><strong>-font</strong></dt>
+<dd>
+<p>Set redaction annotation overlay text.</p>
+</dd>
+<dt><strong>-fontsize</strong></dt>
+<dd>
+<p>Set redaction annotation overlay font size.</p>
+</dd>
+<dt><strong>-opacity</strong></dt>
+<dd>
+<p>Set redaction annotation overlay font opacity.</p>
+</dd>
+<dt><strong>-linespace</strong></dt>
+<dd>
+<p>Set redaction annotation overlay line spacing.</p>
+</dd>
+<dt><strong>-outline</strong></dt>
+<dd>
+<p>Set redaction annotation text to be outline.</p>
+</dd>
+<dt><strong>-linewidth</strong></dt>
+<dd>
+<p>Set line width for outline annotation text.</p>
 </dd>
 </dl>
+<p><strong>cpdf -remove-search-index in.pdf -o out.pdf</strong></p>
+<p>Remove the search index from a PDF.</p>
+<p><strong>cpdf -remove-marked-content in.pdf</strong> [&lt;range&gt;]
+<strong>-o out.pdf</strong></p>
+<p>Remove all marked content from the given pages.</p>
+<p><strong>cpdf -remove-acroform in.pdf -o out.pdf</strong></p>
+<p>Remove AcroForm.</p>
+<p><strong>cpdf -remove-struct-tree in.pdf -o out.pdf</strong></p>
+<p>Remove the structure tree from a PDF.</p>
+<p><strong>cpdf -ocg-remove in.pdf -o out.pdf</strong></p>
+<p>Remove the optional content structure from a PDF.</p>
 <h1 id="miscellaneous">21. MISCELLANEOUS</h1>
 <p><strong>cpdf -draft</strong> <strong>in.pdf</strong> [&lt;range&gt;]
 [-boxes] [-draft-remove-only &lt;n&gt;] <strong>-o out.pdf</strong></p>
